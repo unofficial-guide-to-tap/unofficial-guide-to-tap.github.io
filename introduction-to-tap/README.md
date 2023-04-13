@@ -8,7 +8,16 @@
 - Secure Software Supply Chain
 - Abstraction Of Infrastructure
 - DevSecOps
-- 
+
+--- 
+
+VMware Tanzu Application Platform (TAP) is a development platform that facilitates building and deploying cloud-native applications on any compliant public cloud or on-premises Kubernetes cluster. TAP streamlines the developer experience and allows developers to quickly build and test applications, regardless of their familiarity with Kubernetes. It automates source-to-production pipelines and encourages collaboration between developers and operators.
+
+TAP simplifies workflows in the inner loop (development cycle) and outer loop (deployment and maintenance) of Kubernetes-based app development. Operations teams can create application scaffolding templates with built-in security and compliance guardrails. Supply chains, a feature of TAP, codify the steps necessary for applications to reach production or lower environments, unifying access points for tools and enabling smoother integration.
+
+Tanzu Application Platform provides a default set of components to automate app deployment to staging and production on Kubernetes. This alleviates pain points in both inner and outer loops and allows operators to customize the platform with other products.
+
+---
 
 VMware Tanzu Application Platform (TAP) is a suite of tools and services designed to simplify the process of building, deploying, and managing modern, cloud-native applications. This platform aims to bring together developers and IT operations teams to enhance collaboration, streamline workflows, and improve overall application delivery
 
