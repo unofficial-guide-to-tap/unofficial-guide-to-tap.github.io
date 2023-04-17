@@ -5,6 +5,8 @@
 ### GKE Cluster
 ...
 
+### DNS Settings
+
 ### Container Registry
 ...
 
@@ -206,8 +208,6 @@ grype:
 
 ### Run The Installation
 
-### Validate
-
 ```
 tanzu package install tap \
     -p tap.tanzu.vmware.com \
@@ -217,8 +217,21 @@ tanzu package install tap \
     -n "tap-install"
 ```
 
+```
+kubectl -n tap-install get packageinstalls
+```
 
 ## Create DNS Records
+
+- Get the IP address:
+```
+kubectl -n tanzu-system-ingress \
+  get svc envoy \
+  -o json \
+  | jq ".status.loadBalancer.ingress[] | .ip" -r
+```
+- Create A record for `*.DOMAIN` pointing to the LB
+
 
 ## Validate
 
