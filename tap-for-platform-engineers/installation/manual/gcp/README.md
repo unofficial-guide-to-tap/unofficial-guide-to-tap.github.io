@@ -150,9 +150,72 @@ cd cluster-essentials
 
 ## Install TAP
 
+TAP is installed via the `tap` meta package. The `tap` package takes a single configuration file (`values.yaml`) as a parameter and passes sections of it to its dependent packages. 
+
 ### Configuration File
 
+**values.yaml** (source: [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.4/tap/install.html#install-your-tanzu-application-platform-profile-2))
+```
+shared:
+  ingress_domain: "INGRESS-DOMAIN"
+  
+  image_registry:
+    project_path: "HOST/REPO"
+    username: USERNAME"
+    password: "PASSWORD"
+
+  kubernetes_distribution: ""
+  kubernetes_version: ""
+
+ceip_policy_disclosed: true
+
+profile: full
+
+supply_chain: basic
+
+ootb_supply_chain_basic:
+  registry:
+    server: "HOST"
+    repository: "REPO"
+    
+contour:
+  envoy:
+    service:
+      type: LoadBalancer
+
+buildservice:
+  kp_default_repository: "REPO"
+  kp_default_repository_username: "USERNAME"
+  kp_default_repository_password: "PASSWORD"
+
+tap_gui:
+  service_type: ClusterIP
+
+metadata_store:
+  ns_for_export_app_cert: "default"
+  app_service_type: ClusterIP 
+
+scanning:
+  metadataStore:
+    url: ""
+
+grype:
+  namespace: "default"
+  targetImagePullSecret: "tap-registry"
+```
+
 ### Run The Installation
+
+### Validate
+
+```
+tanzu package install tap \
+    -p tap.tanzu.vmware.com \
+    -v "VERSION" \
+    --values-file values.yaml \
+    --wait="false" \
+    -n "tap-install"
+```
 
 
 ## Create DNS Records
