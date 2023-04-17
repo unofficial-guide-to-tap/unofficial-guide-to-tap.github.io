@@ -152,7 +152,13 @@ cd cluster-essentials
 
 ### Configuration File
 
-### Install The Packages
+### Run The Installation
 
 
-### Create DNS Records
+## Create DNS Records
+
+## Validate
+
+### Access TAP GUI
+
+### Deploy A Test Workload
