@@ -2,17 +2,34 @@
 
 ## GCP Preparations
 
-### GKE Cluster
-...
+### Kubernetes Engine
+1. Search for "Kubernetes Engine" in the search bar and click the link
+2. Select "Clusters" in the left menu
+3. Click "Create" to begin the creation of a new cluster
+4. Select "Standard" cluster mode by clicking "CONFIGURE"
+5. Set the "Location type" to "Regional"
+7. Select "Release channel" if not already selected and choose "Regular channel (default)". Make sure the version is set to 1.24 ir higher.
+8. In the menu, select "default-pool" and then "Nodes"
+9. Select the `e2-standard-2` instance type. This is below the required minimum but has proven to work for testing and demo environments.
+10. Hit "Create" to begin the deployment
+11. Authenticate with the cluster on your jumphost (see next section)
 
-### DNS Settings
+### Cloud DNS
+1. Search for "Cloud DNS" in the search bar and click the link
+2. Create a zone that can be resolved or use one that already exists.
+
+At this point, we don't need to make any entries, yet. This will come as we learn about the public addresses used by our TAP deployment.
 
 ### Container Registry
-...
+1. Search for "Container Registry" in the search bar and click the link
+2. To to "Settings" in the left menu
+3. Take note of the "Container Registry host". This should be sth. like `gcr.io`. 
+4. Also take not of your project ID within GCP. Click the project selector drop down menu in the top menu bar next to the Google Cloud logo. You can find it in the "ID" column of the popup window that opens up.
+
+The "Container Registry host" and the project ID will together form the URL to our container registry. This will be needed later on.
 
 ### Service Account
-...
-
+- 
 
 ## Tanzu Network Downloads
 - Download Cluster Essentials (= Carvel)
