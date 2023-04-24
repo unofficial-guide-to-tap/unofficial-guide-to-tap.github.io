@@ -128,9 +128,10 @@ gcloud auth configure-docker
 ```
 
 3. Mirror cluster essentials packages
+
 ```
-SHA="..."
-HOST="..,"
+SHA="2354688e46d4bb4060f74fca069513c9b42ffa17a0a6d5b0dbb81ed52242ea44"
+HOST="gcr.io"
 REPO="..."
 
 imgpkg copy \
@@ -141,8 +142,8 @@ imgpkg copy \
 
 3. Mirror TAP packages
 ```
-VERSION="..."
-HOST="..."
+VERSION="1.4.2"
+HOST="gcr.io"
 REPO="..."
 
 imgpkg copy \
@@ -159,11 +160,12 @@ END: ## Create A Package Repository Mirror
 
 1. Setup environment variables
 ```
-HOST="HOST_OF_YOUR_PACKAGE_MIRROR_REGISTRY"
-REPO="REPO_OF_YOUR_PACKAGE_MIRROR_REGISTRY"
-SHA="SHA_HASH_OF_THE_INSTALLATION_BUNDLE" ???
+GOOGLE_APPLICATION_CREDENTIALS="???"
+SHA="2354688e46d4bb4060f74fca069513c9b42ffa17a0a6d5b0dbb81ed52242ea44"
+HOST="gcr.io"
+REPO="..."
 
-export INSTALL_REGISTRY_HOSTNAME="$HOST"
+export INSTALL_REGISTRY_HOSTNAME="gcr.io"
 export INSTALL_BUNDLE="$HOST/$REPO/cluster-essentials-bundle@sha256:$SHA"
 export INSTALL_REGISTRY_USERNAME="_json_key"
 export INSTALL_REGISTRY_PASSWORD="$(cat $GOOGLE_APPLICATION_CREDENTIALS)"
@@ -280,7 +282,7 @@ END: ## Create DNS Records
 ## Validate The Installation
 
 ### Access TAP GUI
-Open your browser at [http://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
+1. Open your browser at [http://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
 
 ### Deploy A Test Workload
 
