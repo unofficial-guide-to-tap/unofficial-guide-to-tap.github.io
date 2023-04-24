@@ -243,7 +243,9 @@ kubectl -n tanzu-system-ingress \
   | jq ".status.loadBalancer.ingress[] | .ip" -r
 ```
 
-2. Create A record for `*.DOMAIN` pointing to that address
+2. Create the following A records pointing to that address
+   - `*.DOMAIN` 
+   - `*.cnrs.DOMAIN`
 
 The [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project mentioned above allows you to configure the IP address as a variable so you can manage these entries via Terraform.
 
@@ -254,5 +256,19 @@ END: ## Install TAP
 ## Validate
 
 ### Access TAP GUI
+Open your browser at [http://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
 
 ### Deploy A Test Workload
+
+1. Create a developer namespace
+```
+kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
+kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
+```
+
+2. Deploy the workload
+```
+tanzu app workload create \
+  -n test \
+  ???
+```
