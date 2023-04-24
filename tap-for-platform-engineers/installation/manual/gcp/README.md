@@ -1,6 +1,25 @@
 # TAP On GCP
 
-## Preparing Google Cloud Platform
+<!-- TOC -->
+
+- [TAP On GCP](#tap-on-gcp)
+    - [Prepare The Infrastructure](#prepare-the-infrastructure)
+    - [Download Software](#download-software)
+    - [Prepare The Jump Host](#prepare-the-jump-host)
+        - [Install Tanzu CLI](#install-tanzu-cli)
+        - [Install Carvel Tools](#install-carvel-tools)
+    - [Create A Package Repository Mirror](#create-a-package-repository-mirror)
+    - [Install Cluster Essentials](#install-cluster-essentials)
+    - [Install TAP](#install-tap)
+    - [Create DNS Records](#create-dns-records)
+    - [Validate The Installation](#validate-the-installation)
+        - [Access TAP GUI](#access-tap-gui)
+        - [Deploy A Test Workload](#deploy-a-test-workload)
+
+<!-- /TOC -->
+
+
+## Prepare The Infrastructure
 
 Create the following GCP resources manually or use this [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project to automate the setup.
 
@@ -10,29 +29,25 @@ Create the following GCP resources manually or use this [Terraform](https://gith
 4. Have access to **Google Container Registry** (GCR) (or external container registry)
 5. An Ubuntu based **Google Compute Engine Instance** in the VPC that will be used as a jump host
 
-## Tanzu Network Downloads
+## Download Software
 Download the following artifacts from [Tanzu Network](network.tanzu.vmware.com/) to your jump host.
 
-**Cluster Essentials 1.4.1**
+1. **Cluster Essentials 1.4.1:** This package containes [Carvel](https://carvel.dev/) toolsand includes binaries to install on your jump host as well as kapp controller which will be deployed to the Kubernetes cluster.
 
-This package containes [Carvel](https://carvel.dev/) toolsand includes binaries to install on your jump host as well as kapp controller which will be deployed to the Kubernetes cluster.
-
-**Tanzu Framework 1.4.4**
-
-This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP.
+2. **Tanzu Framework 1.4.4:** This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP.
 
 <!--
-END: ## Preparing Google Cloud Platform
+END: ## Prepare The Infrastructure
 -->
 
-## Set Up Your Jump Host
+## Prepare The Jump Host
 
 Before you proceed, install the following components:
 
 - Docker (`docker version`)
 - Kubectl (`kubectl version --client`)
 
-### Tanzu CLI
+### Install Tanzu CLI
 
 1. Extract the downloaded archive
 ```
@@ -59,7 +74,8 @@ tanzu version
 tanzu plugin list
 ```
 
-### Cluster Essentials: Carvel Tools
+### Install Carvel Tools
+The binaries we need to have installed are shipping with the previously downloaded Cluster Essentials package.
 
 1. Extract the downloaded archive
 ```
@@ -85,10 +101,10 @@ ytt --version
 ```
 
 <!--
-END: ## Set Up Your Jump Host
+END: ## Prepare The Jump Host
 -->
 
-## Package Repository Mirror
+## Create A Package Repository Mirror
 
 1. Docker login to Tanzu Network
 ```
@@ -132,10 +148,10 @@ imgpkg copy \
 ```
 
 <!--
-END: ## Package Repository Mirror
+END: ## Create A Package Repository Mirror
 -->
 
-## Cluster Essentials: Kapp Controller
+## Install Cluster Essentials
 
 1. Setup environment variables
 ```
@@ -156,7 +172,7 @@ cd cluster-essentials
 ```
 
 <!--
-END: ## Cluster Essentials: Kapp Controller
+END: ## Install Cluster Essentials
 -->
 
 ## Install TAP
@@ -233,6 +249,10 @@ tanzu -n tap-install packages installed list
 kubectl -n tap-install get packageinstalls 
 ```
 
+<!--
+END: ## Install TAP
+-->
+
 ## Create DNS Records
 
 1. Get the public IP of your Contour ingress (installed with TAP)
@@ -250,10 +270,10 @@ kubectl -n tanzu-system-ingress \
 The [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project mentioned above allows you to configure the IP address as a variable so you can manage these entries via Terraform.
 
 <!--
-END: ## Install TAP
+END: ## Create DNS Records
 -->
 
-## Validate
+## Validate The Installation
 
 ### Access TAP GUI
 Open your browser at [http://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
@@ -272,3 +292,7 @@ tanzu app workload create \
   -n test \
   ???
 ```
+
+<!--
+END: ## Validate The Installation
+-->
