@@ -1,20 +1,20 @@
-# TAP On GCP
+TAP On GCP
+=
 
 <!-- TOC -->
 
-- [TAP On GCP](#tap-on-gcp)
-    - [Prepare The Infrastructure](#prepare-the-infrastructure)
-    - [Download Software](#download-software)
-    - [Prepare The Jump Host](#prepare-the-jump-host)
-        - [Install Tanzu CLI](#install-tanzu-cli)
-        - [Install Carvel Tools](#install-carvel-tools)
-    - [Create A Package Repository Mirror](#create-a-package-repository-mirror)
-    - [Install Cluster Essentials](#install-cluster-essentials)
-    - [Install TAP](#install-tap)
-    - [Create DNS Records](#create-dns-records)
-    - [Validate The Installation](#validate-the-installation)
-        - [Access TAP GUI](#access-tap-gui)
-        - [Deploy A Test Workload](#deploy-a-test-workload)
+- [Prepare The Infrastructure](#prepare-the-infrastructure)
+- [Download Software](#download-software)
+- [Prepare The Jump Host](#prepare-the-jump-host)
+    - [Install Tanzu CLI](#install-tanzu-cli)
+    - [Install Carvel Tools](#install-carvel-tools)
+- [Create A Package Repository Mirror](#create-a-package-repository-mirror)
+- [Install Cluster Essentials](#install-cluster-essentials)
+- [Install TAP](#install-tap)
+- [Create DNS Records](#create-dns-records)
+- [Validate The Installation](#validate-the-installation)
+    - [Access TAP GUI](#access-tap-gui)
+    - [Deploy A Test Workload](#deploy-a-test-workload)
 
 <!-- /TOC -->
 
