@@ -6,9 +6,4 @@ This guide will guide you through those aspects that are related to or supported
 
 1. [Architecture](./architecture)
 2. [Installation](./installation)
-   1. [Need To Know](./installation/need-to-know)
-   2. [Installation Prerequisites](./installation/installation-prerequisites)
-   3. [Manual Installation](./installation/manual-installation)
-   4. [GitOps Installation](./installation/gitops-installation)
-   5. [Troubleshooting](./installation/troubleshooting)
 3. [Advanced Topics](./advanced-topics)
