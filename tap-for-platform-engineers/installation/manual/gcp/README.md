@@ -3,18 +3,19 @@ TAP On GCP
 
 <!-- TOC -->
 
-- [Prepare The Infrastructure](#prepare-the-infrastructure)
-- [Download Software](#download-software)
-- [Prepare The Jump Host](#prepare-the-jump-host)
-    - [Install Tanzu CLI](#install-tanzu-cli)
-    - [Install Carvel Tools](#install-carvel-tools)
-- [Create A Package Repository Mirror](#create-a-package-repository-mirror)
-- [Install Cluster Essentials](#install-cluster-essentials)
-- [Install TAP](#install-tap)
-- [Create DNS Records](#create-dns-records)
-- [Validate The Installation](#validate-the-installation)
-    - [Access TAP GUI](#access-tap-gui)
-    - [Deploy A Test Workload](#deploy-a-test-workload)
+- [TAP On GCP](#tap-on-gcp)
+    - [Prepare The Infrastructure](#prepare-the-infrastructure)
+    - [Download Software](#download-software)
+    - [Prepare The Jump Host](#prepare-the-jump-host)
+        - [Install Tanzu CLI](#install-tanzu-cli)
+        - [Install Carvel Tools](#install-carvel-tools)
+    - [Create A Package Repository Mirror](#create-a-package-repository-mirror)
+    - [Install Cluster Essentials](#install-cluster-essentials)
+    - [Install TAP](#install-tap)
+    - [Create DNS Records](#create-dns-records)
+    - [Validate The Installation](#validate-the-installation)
+        - [Access TAP GUI](#access-tap-gui)
+        - [Deploy A Test Workload](#deploy-a-test-workload)
 
 <!-- /TOC -->
 
@@ -32,9 +33,10 @@ Create the following GCP resources manually or use this [Terraform](https://gith
 ## Download Software
 Download the following artifacts from [Tanzu Network](network.tanzu.vmware.com/) to your jump host.
 
-1. **Cluster Essentials 1.4.1:** This package containes [Carvel](https://carvel.dev/) toolsand includes binaries to install on your jump host as well as kapp controller which will be deployed to the Kubernetes cluster.
-
-2. **Tanzu Framework 1.4.4:** This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP.
+| Artifact | Version  | Notes |
+|---|---|---|
+| Cluster Essentials | 1.4.1 | This package containes [Carvel](https://carvel.dev/) toolsand includes binaries to install on your jump host as well as kapp controller which will be deployed to the Kubernetes cluster. |
+| Tanzu Framework | 1.4.4 | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. |
 
 <!--
 END: ## Prepare The Infrastructure
@@ -44,8 +46,10 @@ END: ## Prepare The Infrastructure
 
 Before you proceed, install the following components:
 
-- Docker (`docker version`)
-- Kubectl (`kubectl version --client`)
+| Software | Version | Check |
+|---|---|---|
+| Docker | >= 20.10 | `docker version` |
+| Kubectl | >= 1.25  | `kubectl version --client` |
 
 ### Install Tanzu CLI
 
