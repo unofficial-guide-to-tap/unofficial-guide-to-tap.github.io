@@ -8,7 +8,3 @@ The manual installation will run you through the installation steps one by one. 
 2. Microsoft Azure
 3. Amazon Web Services
 3. Minikube
-
-
----
-Next: [Main Page](../)
