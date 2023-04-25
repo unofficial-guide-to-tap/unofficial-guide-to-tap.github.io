@@ -50,7 +50,7 @@ vim $HOME/key.json
 ```
 
 ## Download Software
-Download the following artifacts from [Tanzu Network](network.tanzu.vmware.com/) to your jump host.
+Download the following artifacts from [Tanzu Network](https://network.tanzu.vmware.com/) to your jump host.
 
 | Artifact | Version  | Notes |
 |---|---|---|
