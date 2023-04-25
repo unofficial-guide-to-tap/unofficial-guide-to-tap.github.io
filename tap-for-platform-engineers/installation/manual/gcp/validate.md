@@ -58,3 +58,19 @@
         ```
 
     2. Open the URL in your browser. You should see the Petclinic web UI.
+
+## Cleanup
+
+1. Delete the `Workload`
+
+    ```
+    tanzu -n test app workload delete petclinic
+    ```
+
+2. Wait a few seconds until the resources got cleaned up
+
+3. Delete the `Namespace`
+
+    ```
+    kubectl delete ns test
+    ```
