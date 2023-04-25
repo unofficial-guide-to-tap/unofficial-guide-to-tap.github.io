@@ -7,4 +7,4 @@ This guide is designed to cater to two primary audiences: Platform engineers and
 There are 2 paths through this guide. Choose wisely:
 
 - [TAP For Platform Engineers](./tap-for-platform-engineers)
-- [TAP For Application Teams](./tap-for-app-teams)
+- TAP For Application Teams
