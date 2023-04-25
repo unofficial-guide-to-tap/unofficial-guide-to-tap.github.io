@@ -74,3 +74,6 @@
     ```
     kubectl delete ns test
     ```
+
+---
+Next: [Main Page](./)
