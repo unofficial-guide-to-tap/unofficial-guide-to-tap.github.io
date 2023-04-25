@@ -26,6 +26,3 @@ All installation steps are designed to be run from an **Ubuntu** jump host where
 
 1. [Manual Installation](./manual)
 2. [GitOps Installation](./gitops)
-
----
-Next: [Advanced Topics](../advanced-topics)
