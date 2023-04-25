@@ -4,8 +4,6 @@ This guide is designed to cater to two primary audiences: Platform engineers and
 
 **Disclaimer:** This guide is supposed to help people build and use a developer platform built with TAP. The focus on learning means we will sometimes sacrifice technical correctness and/or completeness of information in favor it didactics.
 
-## Contents
-
 There are 2 paths through this guide. Choose wisely:
 
 - [TAP For Platform Engineers](./tap-for-platform-engineers)
