@@ -35,3 +35,6 @@ The following sections provide details on the key components and aspects of TAP'
 - Example: an application could be `myapp.cnrs.example.com`
 - Example: TAP GUI could be at `tap-gui.example.com`
 - A successful rollout of an application (`Delivery`) registers the application in the ingress controller using an `HTTPProxy` resource.
+
+---
+Next: [Installation](../installation)
