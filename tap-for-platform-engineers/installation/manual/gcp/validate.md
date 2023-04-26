@@ -1,11 +1,8 @@
 # TAP on GCP - Validation
 
-<!-- TOC depthfrom:2 depthto:2 orderedlist:false -->
-
 - [Access TAP GUI](#access-tap-gui)
 - [Deploy A Test Workload](#deploy-a-test-workload)
-
-<!-- /TOC -->
+- [Cleanup](#cleanup)
 
 ## Access TAP GUI
 
@@ -24,11 +21,11 @@
 2. Deploy the workload
     ```
     tanzu apps workload create petclinic -n test \
-    -l "app.kubernetes.io/part-of=petclinic" \
-    -l "apps.tanzu.vmware.com/workload-type=web" \
-    --build-env "BP_JVM_VERSION=17" \
-    --git-repo https://github.com/spring-projects/spring-petclinic.git \
-    --git-branch main
+      -l "app.kubernetes.io/part-of=petclinic" \
+      -l "apps.tanzu.vmware.com/workload-type=web" \
+      --build-env "BP_JVM_VERSION=17" \
+      --git-repo https://github.com/spring-projects/spring-petclinic.git \
+      --git-branch main
     ```
 
 3. Monitor progress

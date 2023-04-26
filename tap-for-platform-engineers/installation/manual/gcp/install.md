@@ -1,6 +1,11 @@
 # TAP on GCP - Installation
 
-<!-- TOC depthFrom:2 depthTo:2 orderedList:false -->autoauto- [Install Tanzu CLI](#install-tanzu-cli)auto- [Install Carvel Tools](#install-carvel-tools)auto- [Create A Package Repository Mirror](#create-a-package-repository-mirror)auto- [Install Cluster Essentials](#install-cluster-essentials)auto- [Install The TAP Package](#install-the-tap-package)auto- [Create DNS Records](#create-dns-records)autoauto<!-- /TOC -->
+- [Install Tanzu CLI](#install-tanzu-cli)
+- [Install Carvel Tools](#install-carvel-tools)
+- [Create A Package Repository Mirror](#create-a-package-repository-mirror)
+- [Install Cluster Essentials](#install-cluster-essentials)
+- [Install The TAP Package](#install-the-tap-package)
+- [Create DNS Records](#create-dns-records)
 
 ## Install Tanzu CLI
 
