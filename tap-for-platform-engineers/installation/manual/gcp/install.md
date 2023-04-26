@@ -1,15 +1,6 @@
 # TAP on GCP - Installation
 
-<!-- TOC depthfrom:2 depthto:2 orderedlist:false -->
-
-- [Install Tanzu CLI](#install-tanzu-cli)
-- [Install Carvel Tools](#install-carvel-tools)
-- [Create A Package Repository Mirror](#create-a-package-repository-mirror)
-- [Install Cluster Essentials](#install-cluster-essentials)
-- [Install The TAP Package](#install-the-tap-package)
-- [Create DNS Records](#create-dns-records)
-
-<!-- /TOC -->
+<!-- TOC depthFrom:2 depthTo:2 orderedList:false -->autoauto- [Install Tanzu CLI](#install-tanzu-cli)auto- [Install Carvel Tools](#install-carvel-tools)auto- [Create A Package Repository Mirror](#create-a-package-repository-mirror)auto- [Install Cluster Essentials](#install-cluster-essentials)auto- [Install The TAP Package](#install-the-tap-package)auto- [Create DNS Records](#create-dns-records)autoauto<!-- /TOC -->
 
 ## Install Tanzu CLI
 
@@ -175,16 +166,13 @@ END: ## Install Cluster Essentials
     ```
     ```
     shared:
-    ingress_domain: "INGRESS-DOMAIN"
-    
-    image_registry:
-        project_path: "HOST/REPO"
+      ingress_domain: YOUR_DOMAIN
+
+      image_registry:
+        project_path: "REGISTRY_HOST/REGISTRY_REPO"
         username: "_json_key"
         password: |
-        SERVICE_ACCOUNT_KEY_JSON
-
-    kubernetes_distribution: ""
-    kubernetes_version: ""
+          SERVICE_ACCOUNT_KEY_JSON
 
     ceip_policy_disclosed: true
 
@@ -192,38 +180,16 @@ END: ## Install Cluster Essentials
 
     supply_chain: basic
 
-    ootb_supply_chain_basic:
-    registry:
-        server: "HOST"
-        repository: "REPO"
-        
     contour:
-    envoy:
+      envoy:
         service:
-        type: LoadBalancer
-
-    buildservice:
-    kp_default_repository: "REPO"
-    kp_default_repository_username: "USERNAME"
-    kp_default_repository_password: "PASSWORD"
+          type: LoadBalancer
 
     tap_gui:
-    service_type: ClusterIP
+      service_type: ClusterIP
 
     cnrs:
-    domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
-
-    metadata_store:
-    ns_for_export_app_cert: "default"
-    app_service_type: ClusterIP 
-
-    scanning:
-    metadataStore:
-        url: ""
-
-    grype:
-    namespace: "default"
-    targetImagePullSecret: "tap-registry"
+      domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
     ```
 
 4. Install the `tap` package with that configuration

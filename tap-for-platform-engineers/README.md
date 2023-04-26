@@ -6,4 +6,4 @@ This guide will guide you through those aspects that are related to or supported
 
 1. [Architecture](./architecture)
 2. [Installation](./installation)
-3. [Advanced Topics](./advanced-topics)
+3. [Advanced Topics](./advanced)
