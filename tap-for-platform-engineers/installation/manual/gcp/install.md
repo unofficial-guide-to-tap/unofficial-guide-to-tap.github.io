@@ -146,10 +146,10 @@ END: ## Install Cluster Essentials
 
     ```
     tanzu secret registry add tap-registry \
-    --username "_json_key" \
-    --password-file $HOME/key.json \
-    --server "gcr.io" \
-    --export-to-all-namespaces --yes --namespace tap-install
+      --username "_json_key" \
+      --password-file $HOME/key.json \
+      --server "gcr.io" \
+      --export-to-all-namespaces --yes --namespace tap-install
     ```
 
 2. Create `PackageRepository`
@@ -160,8 +160,8 @@ END: ## Install Cluster Essentials
     REPO="..."
 
     tanzu package repository add tanzu-tap-repository \
-    --namespace tap-install \
-    --url ${HOST}/${REPO}/tap-packages:${VERSION}
+      --namespace tap-install \
+      --url ${HOST}/${REPO}/tap-packages:${VERSION}
     ```
 
 3. Create the TAP configuration file
@@ -201,11 +201,11 @@ END: ## Install Cluster Essentials
 
     ```
     tanzu package install tap \
-        -p tap.tanzu.vmware.com \
-        -v "1.4.4" \
-        --values-file values.yaml \
-        --wait="false" \
-        -n "tap-install"
+      -p tap.tanzu.vmware.com \
+      -v "1.4.4" \
+      --values-file values.yaml \
+      --wait="false" \
+      -n "tap-install"
     ```
 
 3. Watch progress of the `PackageInstall`s
@@ -222,10 +222,8 @@ END: ## Install TAP
 
 1. Get the public IP of your Contour ingress (installed with TAP)
     ```
-    kubectl -n tanzu-system-ingress \
-    get svc envoy \
-    -o json \
-    | jq ".status.loadBalancer.ingress[] | .ip" -r
+    kubectl -n tanzu-system-ingress get svc envoy -o json \
+      | jq ".status.loadBalancer.ingress[] | .ip" -r
     ```
 
 2. Create the following A records pointing to that address
