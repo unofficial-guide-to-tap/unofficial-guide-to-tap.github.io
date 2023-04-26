@@ -69,8 +69,8 @@ The binaries we need to have installed are shipping with the previously download
 
     echo "$TANZUNET_PASSWORD" | \
     docker login registry.tanzu.vmware.com \
-        -u $TANZUNET_USERNAME \
-        --password-stdin
+      -u $TANZUNET_USERNAME \
+      --password-stdin
     ```
 
 2. Docker login to Google Container Registry (GCR)
@@ -87,9 +87,9 @@ The binaries we need to have installed are shipping with the previously download
     REPO="..."
 
     imgpkg copy \
-    -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${SHA} \
-    --to-repo ${HOST}/${REPO}/cluster-essentials-bundle \
-    --include-non-distributable-layers
+      -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${SHA} \
+      --to-repo ${HOST}/${REPO}/cluster-essentials-bundle \
+      --include-non-distributable-layers
     ```
 
 3. Mirror TAP packages
@@ -99,9 +99,9 @@ The binaries we need to have installed are shipping with the previously download
     REPO="..."
 
     imgpkg copy \
-    -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${VERSION} \
-    --to-repo ${HOST}/${REPO}/tap-packages \
-    --include-non-distributable-layers
+      -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${VERSION} \
+      --to-repo ${HOST}/${REPO}/tap-packages \
+      --include-non-distributable-layers
     ```
 
 <!--
