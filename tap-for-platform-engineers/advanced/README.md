@@ -1,3 +1,3 @@
 # Advanced Topics
 
-- [SSL/TLS with Contour](./tls-contour.md)
+- [SSL/TLS with Contour And Cert Manager](./tls-contour-certmanager.md)
