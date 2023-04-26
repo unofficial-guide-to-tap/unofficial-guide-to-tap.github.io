@@ -58,5 +58,8 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 | Cluster Essentials Bundle YAML | 1.4.1 | Contains the SHA hash |
 | Tanzu Framework | 1.4.4 | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. |
 
+
+</br>
+
 ---
 Next: [Installation](./install.md)

@@ -72,5 +72,8 @@
     kubectl delete ns test
     ```
 
+
+</br>
+
 ---
 Next: [Advanced Topics](../../../advanced-topics)
