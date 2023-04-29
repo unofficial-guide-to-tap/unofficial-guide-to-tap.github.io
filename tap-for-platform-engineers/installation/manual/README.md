@@ -7,4 +7,4 @@ The manual installation will run you through the installation steps one by one. 
 1. [Google Cloud Platform](./gcp)
 2. Microsoft Azure
 3. Amazon Web Services
-3. Minikube
+4. VMware Tanzu Kubernetes Grid

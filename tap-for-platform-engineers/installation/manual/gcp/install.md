@@ -211,7 +211,7 @@ END: ## Install Cluster Essentials
 3. Watch progress of the `PackageInstall`s
 
     ```
-    tanzu -n tap-install packages installed list
+    tanzu -n tap-install package installed list
     ```
 
 <!--

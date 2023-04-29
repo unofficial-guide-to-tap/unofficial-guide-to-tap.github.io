@@ -1,9 +1,12 @@
 # TAP For Platform Engineers
 
-As a platform engineer, you are responsible for designing, building, and maintaining scalable and efficient systems for technology platforms. Key responsibilities include architecting systems, implementing infrastructure, ensuring reliability, automating processes, collaborating with other teams, optimizing performance, implementing security measures, managing resources and costs, documenting and sharing knowledge, and staying up to date with industry trends. Your role is to provide a stable, secure, and high-performing platform to support your organization's needs and growth.
-
-This guide will guide you through those aspects that are related to or supported by a developer platform like TAP.
-
 1. [Architecture](./architecture)
 2. [Installation](./installation)
+    1. [Manual](./installation/manual)
+        1. [Google Cloud Platform](./installation/manual/gcp)
+        2. Microsoft Azure
+        3. Amazon Web Services
+        3. [Minikube](./installation/manual/minikube)
+    2. GitOps
 3. [Advanced Topics](./advanced)
+    1. [SSL/TLS with Contour And Cert Manager](./advanced/tls-contour-cm.md)
