@@ -2,6 +2,6 @@
 
 This installation guide is divided into 3 pieces:
 
-- [Prerequisites](./prereqs.md)
-- [Installation](./install.md)
-- [Validation](./validate.md)
+1. [Prerequisites](./prereqs.md)
+2. [Installation](./install.md)
+3. [Validation](./validate.md)
