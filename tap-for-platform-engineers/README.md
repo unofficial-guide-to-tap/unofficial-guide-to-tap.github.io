@@ -9,4 +9,5 @@
         3. [Minikube](./installation/manual/minikube)
     2. GitOps
 3. [Advanced Topics](./advanced)
-    1. [SSL/TLS with Contour And Cert Manager](./advanced/tls-contour-cm.md)
+    1. [SSL/TLS Encryption](./ssl-tls/README.md)
+    2. [Supply Chain](./supply-chain/README.md)

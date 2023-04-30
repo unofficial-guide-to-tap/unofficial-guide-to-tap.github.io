@@ -1,4 +1,4 @@
 # Advanced Topics
 
-- [SSL/TLS](./ssl-tls)
-- [Supply Chain: Add Testing](./supply-chain-testing.md)
+- [SSL/TLS Encryption](./ssl-tls/README.md)
+- [Supply Chain](./supply-chain/README.md)

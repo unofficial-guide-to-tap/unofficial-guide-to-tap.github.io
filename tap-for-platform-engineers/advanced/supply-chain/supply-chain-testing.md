@@ -1,6 +1,4 @@
-# Supply Chain: Add Testing
-
-TAP ships with multiple out-of-the-box (OOTB) supply chain packages which get installed as a dependency of the "tap" package. 
+# OOTB Supply Chain With Testing
 
 ## Optional: Validate Installed Supply Chains
 
