@@ -9,5 +9,5 @@
         3. [Minikube](./installation/manual/minikube)
     2. GitOps
 3. [Advanced Topics](./advanced)
-    1. [SSL/TLS Encryption](./ssl-tls/README.md)
-    2. [Supply Chain](./supply-chain/README.md)
+    1. [SSL/TLS Encryption](./advanced/ssl-tls/README.md)
+    2. [Supply Chain](./advanced/supply-chain/README.md)
