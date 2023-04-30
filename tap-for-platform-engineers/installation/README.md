@@ -1,12 +1,13 @@
 Installation
 ============
 
-1. [Manual](./installation/manual)
+1. [Manual Installation](./installation/manual)
     1. [Google Cloud Platform](./installation/manual/gcp)
     2. Microsoft Azure
     3. Amazon Web Services
     4. [Minikube](./installation/manual/minikube)
-2. GitOps
+2. GitOps Installation
+3. [Advanced Configurations](./advanced/README.md)
 ---
 
 While the details of the installation process vary depending on the platform in use (e.g. AWS, GCP, Azure), the general procedure remains the same:
