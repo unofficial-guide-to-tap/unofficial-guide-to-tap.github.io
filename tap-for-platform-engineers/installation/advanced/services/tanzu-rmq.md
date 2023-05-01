@@ -3,7 +3,7 @@
 Make sure set up the folloring variables before proceeding with this guide:
 
 ```
-RABBITMQ_VERSION="1.3.0"
+RABBITMQ_VERSION="1.4.0"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
 
@@ -46,7 +46,7 @@ INSTALL_REGISTRY_PASSWORD="..."
       --to-repo $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages
     ```
 
-## Install Tanzu RabbitMQ
+## Installation
 
 1. Create the `Namespace` for the operator
 
@@ -68,24 +68,93 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
     tanzu package repository add tanzu-rabbitmq-repository \
       --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages:$RABBITMQ_VERSION \
-      --namespace tanzu-rabbitmq-operator \
+      --namespace tanzu-rabbitmq-operator
     ````
 
 4. Install the `Package` for the RabbitMQ operator
 
     ```
-    cat <<EOF > rabbitmq.yaml
+    cat <<EOF > rabbitmq-operator.yaml
     ---
     EOF
     ```
+
     ```
     tanzu package install rabbitmq-operator \
       --package-name rabbitmq.tanzu.vmware.com \
       --version $RABBITMQ_VERSION \
       --namespace tanzu-rabbitmq-operator \
-      -f rabbitmq.yaml
+      -f rabbitmq-operator.yaml
     ```
 
+## Validation
+
+Check availability of CRDs:
+
+```
+kubectl api-resources | grep rabbitmq
+```
+
+Expected output:
+```
+bindings                                                                 rabbitmq.com/v1beta1                                                true         Binding
+exchanges                                                                rabbitmq.com/v1beta1                                                true         Exchange
+federations                                                              rabbitmq.com/v1beta1                                                true         Federation
+permissions                                                              rabbitmq.com/v1beta1                                                true         Permission
+policies                                                                 rabbitmq.com/v1beta1                                                true         Policy
+queues                                                                   rabbitmq.com/v1beta1                                                true         Queue
+rabbitmqclusters                  rmq                                    rabbitmq.com/v1beta1                                                true         RabbitmqCluster
+schemareplications                                                       rabbitmq.com/v1beta1                                                true         SchemaReplication
+shovels                                                                  rabbitmq.com/v1beta1                                                true         Shovel
+superstreams                                                             rabbitmq.com/v1alpha1                                               true         SuperStream
+users                                                                    rabbitmq.com/v1beta1                                                true         User
+vhosts                                                                   rabbitmq.com/v1beta1                                                true         Vhost
+standbyreplications               sr                                     rabbitmq.tanzu.vmware.com/v1beta1                                   true         StandbyReplication
+```
+
+## Example Usage
+
+```
+kubectl create namespace service-instances
+```
+
+```
+kubectl create secret docker-registry regsecret \
+  --namespace service-instances \
+  --docker-server=$INSTALL_REGISTRY_HOSTNAME \
+  --docker-username="$INSTALL_REGISTRY_USERNAME" \
+  --docker-password="$INSTALL_REGISTRY_PASSWORD"
+```
+
+```
+cat <<EOF | kubectl -n service-instances apply -f -
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rmq-1
+EOF
+```
+
+```
+kubectl -n service-instances patch serviceaccount rmq-1-server\
+  -p '{"imagePullSecrets": [{"name": "regsecret"}]}'
+```
+
+```
+kubectl -n service-instances get rabbitmqclusters,pods,services
+```
+
+```
+NAME                                 ALLREPLICASREADY   RECONCILESUCCESS   AGE
+rabbitmqcluster.rabbitmq.com/rmq-1   True               True               81s
+
+NAME                 READY   STATUS    RESTARTS   AGE
+pod/rmq-1-server-0   1/1     Running   0          53s
+
+NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                        AGE
+service/rmq-1                  ClusterIP   10.3.241.57    <none>        15692/TCP,5672/TCP,15672/TCP   81s
+service/rmq-1-nodes            ClusterIP   None           <none>        4369/TCP,25672/TCP             81s
+```
 
 ---
 Next: [Services Toolkit](./services-toolkit.md)
