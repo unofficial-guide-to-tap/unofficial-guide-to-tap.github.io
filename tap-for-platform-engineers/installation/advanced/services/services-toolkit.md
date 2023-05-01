@@ -1,4 +1,4 @@
-# Service Toolkit
+# Services Toolkit
 
 ## Compatibility
 
