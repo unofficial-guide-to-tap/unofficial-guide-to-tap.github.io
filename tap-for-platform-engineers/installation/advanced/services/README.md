@@ -1,33 +1,56 @@
-# Services
+# Data Services In TAP
 
 1. [Overview](#overview)
-2. [Services Toolkit](./services-toolkit.md)
-
+2. [Kubernetes Extensions](#kubernetes-extensions)
+    1. [Tanzu SQL for Kubernetes](./tanzu-sql.md)
+    2. [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md)
+    3. [Crossplane](https://www.crossplane.io/)
+    4. [Config Connector](https://cloud.google.com/config-connector/docs/overview)
+3. [Services Toolkit](./services-toolkit.md)
 ---
-
-## Overview 
 
 As a platform engineer providing TAP to your customers, you will be sooner or later be asked to provide access to services such as database, message queues or caches. This guide, covers the steps necessary to add this functionality to your developer platform.
 
-### External Services
+## Overview
 
-Connecting an application to existing services outside of TAP, works in the same way as it did before. Applications can use their cluster's connectivity to connect to the outside world in order to connect to e.g. a database. App teams may 
+Ultimately, the goal is to allow applications to connect to services. A `Workload` resource can be configured to attach those services via `ServiceClaim`s which are part of the [Service Bindings](https://servicebinding.io/) specification. Therefore, for a platform engineer running TAP the goal has to be to provide that service binding compatible resource so it can be attached to the application. 
 
-- parameterize their apps with environment variables
-- hardcode some parameters into the code, or 
-- use the [Service Binding](https://servicebinding.io/) specification to declaratively bind a service to their app
+For `ServiceBinding`s to work, the following requirements need to be fulfilled:
 
-As a platform engineer, you are not involved in any of this. Check the [TAP For Application Teams](../../../../tap-for-app-teams/README.md) track of this guide, for detailed information.
+1. A Kubernetes resource that has a `status.binding.name` property pointing to a compatible `Secret` or only the compatible `Secret`
 
-### Service Lifecycle Management
+    This depends on the Kubernetes operator or other sort of extension that is being used to deploy a specific service. While Tanzu SQL and Tanzu RabbitMQ, for instance, are compatible other such as the MongoDB operator are not (yet). This does not mean those extensions cannot be used, but there are additional steps necessary to integrate into the Service Binding mechanism.
 
-You may decide to provide services as part of the TAP platform to allow a smoother "as a service" experience to developers. TAP does not provide e.g. Postgres or RabbitMQ by itself but integrated other components to do the heavy lifting of lifecycling service instances. 
+2. That Kubernetes resource has to be in the same `Namespace` as the `ServiceBinding` and the application to bind to.
 
-Depending on the cloud platform you're running on, different options exist to add services capabilities to TAP. Follow one of the links below to learn how to install and use the respective integration.
+    For TAP, this means all service instance resources have to be deployed into the developer's namespace by either giving them full control over the lifecycle management of the respective service or by significantly adding to the complexity of managing a fleet of services by a centralized services operators team. That team would need access to all developer `Namepspace`s and their service instances would be scattered across `Namespace`s and potentially clusters.
 
-| Method | Cloud Platform |
+TAP includes the `Services Toolkit` which adds support for the following:
+
+- **Segregation of concerns**
+
+  Services and applications can be managed by different teams without scattering services across application namespaces. A single team of services operators can easily manage a large fleet of services.
+
+- **Self-service for application teams**
+
+  Application teams may discover available services and service classes and use claims to consume an existing or trigger the dynamic provisioning of a service.
+
+- **Abstract the underlying mechanism to provision services**
+
+  While there are many ways to manage services with or without Kubernetes, application teams aren't confronted with those details. Service operator teams may use whatever mechanism they deem useful without revealing those details to app teams.
+
+
+## Kubernetes Extensions
+
+The most common way to integrate data services in TAP is to lifecycle those services directly on Kubernetes. This is normally done by extending the Kubernetes API by resource types specific to the services to manage. Very much like `Pod` or `Deployment` you now have resources like `Postgres` or `RabbitmqCluster` available in your Kubernetes cluster. 
+
+Depending on the cloud platform you're running on, different options exist to add data services capabilities to TAP. The following list is not meant to be complete. It only represents those, we have tested with. 
+
+| Extension | Cloud Platform |
 |---|---|
-| [Tanzu SQL](https://docs.vmware.com/en/VMware-Tanzu-SQL) | any |
-| [Tanzu RabbitMQ](https://docs.vmware.com/en/VMware-Tanzu-RabbitMQ-for-Kubernetes/) | any |
+| [Tanzu SQL for Kubernetes](./tanzu-sql.md) | any |
+| [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md) | any |
 | [Crossplane](https://www.crossplane.io/) | any |
 | [Config Connector](https://cloud.google.com/config-connector/docs/overview) | GCP |
+
+Follow one of the links above to learn how to install and use the respective integration.
