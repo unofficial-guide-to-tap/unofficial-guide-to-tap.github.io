@@ -4,7 +4,7 @@
     1. [Relocate Images](#relocate-images)
     2. [Tanzu Postgres](#install-tanzu-postgres)
     3. [Tanzu MySQL](#install-tanzu-mysql)
-2. [Usage](#usage-examples)
+2. [Usage Examples](#usage-examples)
     1. [Postgres](#create-a-postgres-database)
     2. [MySQL](#create-a-mysql-database)
 ---
@@ -40,7 +40,6 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 
 ### Relocate Images
-
 
 1. Docker login to Tanzu Network
     ```
@@ -132,7 +131,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 2. Check available Postgres versions
 
     ```
-    kubectl get postgresversion
+    kubectl get postgresversions
     ```
     Expected output:
     ```
@@ -206,12 +205,35 @@ INSTALL_REGISTRY_PASSWORD="..."
     mysqlversions                                                            with.sql.tanzu.vmware.com/v1                                        false        MySQLVersion
     ```
 
+2. Check available MySQL versions
+
+    ```
+    kubectl get mysqlversions
+    ```
+    Expected output:
+    ```
+    NAME           DB VERSION
+    mysql-8.0.27   8.0.27
+    mysql-8.0.28   8.0.28
+    mysql-8.0.29   8.0.29
+    mysql-8.0.31   8.0.31
+    mysql-latest   8.0.3
+    ```
+
 2. Create a database instance: Check [usage](#usage) section for examples
 
 ## Usage Examples
 
 ```
 kubectl create namespace service-instances
+```
+
+```
+kubectl create secret docker-registry regsecret \
+  --namespace service-instances \
+  --docker-server=$INSTALL_REGISTRY_HOSTNAME \
+  --docker-username="$INSTALL_REGISTRY_USERNAME" \
+  --docker-password="$INSTALL_REGISTRY_PASSWORD"
 ```
 
 ### Postgres
@@ -229,8 +251,55 @@ spec:
 EOF
 ```
 
+```
+kubectl -n service-instances get postgres,pods,services
+```
+
+Expected output:
+```
+NAME                                 STATUS    DB VERSION   BACKUP LOCATION   AGE
+postgres.sql.tanzu.vmware.com/pg-1   Running   15.2                           53m
+
+NAME                 READY   STATUS    RESTARTS   AGE
+pod/pg-1-0           5/5     Running   0          53m
+pod/pg-1-monitor-0   4/4     Running   0          50m
+
+NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+service/pg-1         ClusterIP   10.3.253.45   <none>        5432/TCP   53m
+service/pg-1-agent   ClusterIP   None          <none>        <none>     53m
+```
 
 ### MySQL
+
+```
+cat <<EOF | kubectl -n service-instances apply -f -
+apiVersion: with.sql.tanzu.vmware.com/v1
+kind: MySQL
+metadata:
+  name: mysql-sample
+spec:
+  storageSize: 1G
+  highAvailability:
+    enabled: false
+EOF
+```
+
+```
+kubectl -n service-instances get mysql,pods,services
+```
+
+Expected output:
+```
+NAME                                           READY   STATUS    AGE   OPERATOR VERSION   DB VERSION   UPDATE STATUS      USER ACTION
+mysql.with.sql.tanzu.vmware.com/mysql-sample   true    Running   66s   1.7.0              8.0.31       NoUpdateRequired
+
+NAME                 READY   STATUS    RESTARTS   AGE
+pod/mysql-sample-0   3/3     Running   0          65s
+
+NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)              AGE
+service/mysql-sample           ClusterIP   10.3.248.124   <none>        3306/TCP,33060/TCP   65s
+service/mysql-sample-members   ClusterIP   None           <none>        3306/TCP,33060/TCP   65s
+```
 
 ---
 Next: [Services Toolkit](./services-toolkit.md)

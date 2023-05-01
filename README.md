@@ -1,7 +1,5 @@
 # Unofficial Guide To TAP
 
-There are 2 paths through this guide. Choose wisely:
-
 - [TAP For Platform Engineers](./tap-for-platform-engineers)
 - TAP For Application Teams
 
