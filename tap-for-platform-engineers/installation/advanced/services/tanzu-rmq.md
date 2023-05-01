@@ -114,47 +114,59 @@ standbyreplications               sr                                     rabbitm
 
 ## Example Usage
 
-```
-kubectl create namespace service-instances
-```
+1. Create a `Namespace` to run the service instances
 
-```
-kubectl create secret docker-registry regsecret \
-  --namespace service-instances \
-  --docker-server=$INSTALL_REGISTRY_HOSTNAME \
-  --docker-username="$INSTALL_REGISTRY_USERNAME" \
-  --docker-password="$INSTALL_REGISTRY_PASSWORD"
-```
+    ```
+    kubectl create namespace service-instances
+    ```
 
-```
-cat <<EOF | kubectl -n service-instances apply -f -
-apiVersion: rabbitmq.com/v1beta1
-kind: RabbitmqCluster
-metadata:
-  name: rmq-1
-EOF
-```
+2. Create a `Secret` to access RabbitMQ related images
 
-```
-kubectl -n service-instances patch serviceaccount rmq-1-server\
-  -p '{"imagePullSecrets": [{"name": "regsecret"}]}'
-```
+    ```
+    kubectl create secret docker-registry regsecret \
+      --namespace service-instances \
+      --docker-server=$INSTALL_REGISTRY_HOSTNAME \
+      --docker-username="$INSTALL_REGISTRY_USERNAME" \
+      --docker-password="$INSTALL_REGISTRY_PASSWORD"
+    ```
 
-```
-kubectl -n service-instances get rabbitmqclusters,pods,services
-```
+3. Deploy an instance of `RabbitmqCluster`
 
-```
-NAME                                 ALLREPLICASREADY   RECONCILESUCCESS   AGE
-rabbitmqcluster.rabbitmq.com/rmq-1   True               True               81s
+    ```
+    cat <<EOF | kubectl -n service-instances apply -f -
+    apiVersion: rabbitmq.com/v1beta1
+    kind: RabbitmqCluster
+    metadata:
+      name: rmq-1
+    EOF
+    ```
 
-NAME                 READY   STATUS    RESTARTS   AGE
-pod/rmq-1-server-0   1/1     Running   0          53s
+4. Workaround: The RabbitMQ `Package` currently cannot be parameterized to support private registries. Therefore, we need to add the previously created `Secret` `regsecret` to the `imagePullSecrets` of the `ServiceAccount` running the related `Pods`.
 
-NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                        AGE
-service/rmq-1                  ClusterIP   10.3.241.57    <none>        15692/TCP,5672/TCP,15672/TCP   81s
-service/rmq-1-nodes            ClusterIP   None           <none>        4369/TCP,25672/TCP             81s
-```
+    ```
+    kubectl -n service-instances patch serviceaccount rmq-1-server\
+      -p '{"imagePullSecrets": [{"name": "regsecret"}]}'
+    ```
+
+5. After a while, the resources should have deployed successfully. Run the following command to verify:
+
+    ```
+    kubectl -n service-instances get rabbitmqclusters,pods,services
+    ```
+
+    Expected output:
+
+    ```
+    NAME                                 ALLREPLICASREADY   RECONCILESUCCESS   AGE
+    rabbitmqcluster.rabbitmq.com/rmq-1   True               True               81s
+
+    NAME                 READY   STATUS    RESTARTS   AGE
+    pod/rmq-1-server-0   1/1     Running   0          53s
+
+    NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                        AGE
+    service/rmq-1                  ClusterIP   10.3.241.57    <none>        15692/TCP,5672/TCP,15672/TCP   81s
+    service/rmq-1-nodes            ClusterIP   None           <none>        4369/TCP,25672/TCP             81s
+    ```
 
 ---
 Next: [Services Toolkit](./services-toolkit.md)
