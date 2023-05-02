@@ -138,14 +138,10 @@ standbyreplications               sr                                     rabbitm
     kind: RabbitmqCluster
     metadata:
       name: rmq-1
+    spec:
+      imagePullSecrets:
+      - name: regsecret
     EOF
-    ```
-
-4. Workaround: The RabbitMQ `Package` currently cannot be parameterized to support private registries. Therefore, we need to add the previously created `Secret` `regsecret` to the `imagePullSecrets` of the `ServiceAccount` running the related `Pods`.
-
-    ```
-    kubectl -n service-instances patch serviceaccount rmq-1-server\
-      -p '{"imagePullSecrets": [{"name": "regsecret"}]}'
     ```
 
 5. After a while, the resources should have deployed successfully. Run the following command to verify:
