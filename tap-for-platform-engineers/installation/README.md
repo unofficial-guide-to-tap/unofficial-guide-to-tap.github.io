@@ -1,11 +1,10 @@
 Installation
 ============
 
-1. [Manual Installation](./installation/manual)
-    1. [Google Cloud Platform](./installation/manual/gcp)
+1. [Manual Installation](./manual/README.md)
+    1. [Google Cloud Platform](./manual/gcp/README.md)
     2. Microsoft Azure
     3. Amazon Web Services
-    4. [Minikube](./installation/manual/minikube)
 2. GitOps Installation
 3. [Advanced Configurations](./advanced/README.md)
 ---
