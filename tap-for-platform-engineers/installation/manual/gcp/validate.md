@@ -4,6 +4,8 @@
 - [Deploy A Test Workload](#deploy-a-test-workload)
 - [Cleanup](#cleanup)
 
+---
+
 ## Access TAP GUI
 
 1. Open your browser (ideally, use Google Chrome as it allows you to accept the self-signed certificate)
