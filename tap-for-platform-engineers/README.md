@@ -6,7 +6,6 @@
         1. [Google Cloud Platform](./installation/manual/gcp)
         2. Microsoft Azure
         3. Amazon Web Services
-        3. [Minikube](./installation/manual/minikube)
     2. GitOps Installation
     3. [Advanced Topics](./installation/advanced/README.md)
         1. [SSL/TLS Encryption](./installation/advanced/ssl-tls/README.md)
