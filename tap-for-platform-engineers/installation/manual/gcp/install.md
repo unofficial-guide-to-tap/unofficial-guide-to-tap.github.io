@@ -7,6 +7,8 @@
 - [Install The TAP Package](#install-the-tap-package)
 - [Create DNS Records](#create-dns-records)
 
+---
+
 ## Install Tanzu CLI
 
 1. Extract the downloaded archive
