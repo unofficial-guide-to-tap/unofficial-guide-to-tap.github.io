@@ -1,4 +1,4 @@
-# TAP on GCP - Prerequisites <!-- omit from toc -->
+# Manually Install TAP on GCP - Prerequisites <!-- omit from toc -->
 
 - [GCP Preparations](#gcp-preparations)
 - [Jump Host Setup](#jump-host-setup)

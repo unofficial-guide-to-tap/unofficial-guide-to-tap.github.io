@@ -1,4 +1,4 @@
-# TAP on GCP
+# Manually Install TAP on GCP
 
 This installation guide is divided into 3 pieces:
 

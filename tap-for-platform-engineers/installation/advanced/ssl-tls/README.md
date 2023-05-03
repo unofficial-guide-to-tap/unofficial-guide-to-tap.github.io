@@ -1,5 +1,5 @@
-SSL/TLS
-=
+As a **Platform Engineer**, I want to
+# Secure Endpoints With SSL/TLS
 
 There are multiple ways to add SSL/TLS termination to TAP. Depending on your environment, you might one or the other to be more suitable for your needs.
 

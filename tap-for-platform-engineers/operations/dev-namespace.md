@@ -1,3 +1,4 @@
+As a **Platform Engineer**, I want to
 # Create A Developer Namespace
 
 The functionality of TAP cannot be use from within any `Namespace`. A "TAP-enabled" `Namespace` is commonly called **developer namespace** and includes some additional configuration.

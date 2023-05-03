@@ -1,6 +1,6 @@
 # Unofficial Guide To TAP
 
-- [TAP For Platform Engineers](./tap-for-platform-engineers)
+- [TAP For Platform Engineers](./tap-for-platform-engineers/README.md)
 - TAP For Application Teams
 
 ---
