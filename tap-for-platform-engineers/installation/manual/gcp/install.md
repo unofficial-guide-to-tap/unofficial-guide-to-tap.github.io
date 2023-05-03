@@ -299,4 +299,4 @@ END: ## Create DNS Records
 </br>
 
 ---
-Next: [Validation](./validate.md)
+Next: [Validation](tap-for-platform-engineers/installation/manual/gcp/validate.md)

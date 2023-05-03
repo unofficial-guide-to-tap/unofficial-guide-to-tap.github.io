@@ -78,4 +78,4 @@
 </br>
 
 ---
-Next: [Advanced Topics](../../advanced)
+Next: [Advanced Topics](tap-for-platform-engineers/installation/advanced/README)

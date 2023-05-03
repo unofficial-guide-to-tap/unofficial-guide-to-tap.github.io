@@ -1,7 +1,7 @@
 As a **Platform Engineer**, I want to
 # Manually Install TAP
 
-1. [Google Cloud Platform](./gcp/README.md)
+1. [Google Cloud Platform](tap-for-platform-engineers/installation/manual/gcp/README.md)
 2. Microsoft Azure
 3. Amazon Web Services
 4. VMware Tanzu Kubernetes Grid

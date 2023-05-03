@@ -2,11 +2,11 @@ As a **Platform Engineer**, I want to
 # Add Data Services
 
 1. [Kubernetes Extensions](#kubernetes-extensions)
-    1. [Tanzu SQL for Kubernetes](./tanzu-sql.md)
-    2. [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md)
+    1. [Tanzu SQL for Kubernetes](tap-for-platform-engineers/installation/advanced/services/tanzu-sql.md)
+    2. [Tanzu RabbitMQ for Kubernetes](tap-for-platform-engineers/installation/advanced/services/tanzu-rmq.md)
     3. [Crossplane](https://www.crossplane.io/)
     4. [Config Connector](https://cloud.google.com/config-connector/docs/overview)
-2. [Services Toolkit](./services-toolkit.md)
+2. [Services Toolkit](tap-for-platform-engineers/installation/advanced/services/services-toolkit.md)
 ---
 
 As a platform engineer providing TAP to your customers, you will be sooner or later be asked to provide access to services such as database, message queues or caches. This guide, covers the steps necessary to add this functionality to your developer platform.

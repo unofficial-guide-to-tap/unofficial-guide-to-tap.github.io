@@ -62,4 +62,4 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 </br>
 
 ---
-Next: [Installation](./install.md)
+Next: [Installation](tap-for-platform-engineers/installation/manual/gcp/install.md)
