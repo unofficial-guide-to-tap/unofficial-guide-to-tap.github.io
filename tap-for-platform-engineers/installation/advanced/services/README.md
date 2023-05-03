@@ -16,11 +16,12 @@ The most common way to integrate data services in TAP is to lifecycle those serv
 
 Depending on the cloud platform you're running on, different options exist to add data services capabilities to TAP. The following list is not meant to be complete. It only represents those, we have tested with. 
 
-| Extension | Cloud Platform |
-|---|---|
-| [Tanzu SQL for Kubernetes](./tanzu-sql.md) | any |
-| [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md) | any |
-| [Crossplane](https://www.crossplane.io/) | any |
-| [Config Connector](https://cloud.google.com/config-connector/docs/overview) | GCP |
+| Extension | Cloud Platform | Included in TAP |
+|:---|---|---|
+| [Tanzu SQL for Kubernetes](./tanzu-sql.md) | any | NO |
+| [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md) | any | NO |
+| [Crossplane](https://www.crossplane.io/) | any | YES |
+| [Bitnami](https://bitnami.com/) | any | YES |
+| [Config Connector](https://cloud.google.com/config-connector/docs/overview) | GCP | NO |
 
 Follow one of the links above to learn how to install and use the respective integration.
