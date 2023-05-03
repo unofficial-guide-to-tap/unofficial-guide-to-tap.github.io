@@ -88,14 +88,9 @@ While this step is normally a typcial step you would take as a platform engineer
 
     1. If the service is exposed via `ResourceClaimPolicy`
 
-        ```
-        tanzu -n test service resource-claim list
-        ```
-        Expected output:
-        ```
-        NAME                READY  REASON
-        petclinic-db-vsqwh  True   Ready
-        ```
+        In this case, available services instances cannot be discovered. You will need to know that values used in the next step.
+
+        </br>
 
     2. If the service is exposed via `ClusterInstanceClass`
 
@@ -104,8 +99,12 @@ While this step is normally a typcial step you would take as a platform engineer
         ```
         Expected output:
         ```
-        NAME      DESCRIPTION
-        postgres  PostgreSQL Databases
+        NAME                  DESCRIPTION
+        mysql-unmanaged       MySQL by Bitnami
+        postgres              PostgreSQL Databases    <--- This is ours!
+        postgresql-unmanaged  PostgreSQL by Bitnami
+        rabbitmq-unmanaged    RabbitMQ by Bitnami
+        redis-unmanaged       Redis by Bitnami
         ```
 
 3. Claim the service

@@ -50,9 +50,15 @@
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
-      -v "1.4.4" \
+      -v "1.5.0" \
       --values-file values.yaml \
       --wait="false"
+    ```
+
+3. Wait for all `Package`s to reconcile
+
+    ```
+    tanzu -n tap-install package installed list
     ```
 
 ## Validation 

@@ -54,9 +54,9 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 
 | Artifact | Version  | Notes |
 |---|---|---|
-| Cluster Essentials for Linux| 1.4.1 | Contains [Carvel](https://carvel.dev/) tools |
-| Cluster Essentials Bundle YAML | 1.4.1 | Contains the SHA hash |
-| Tanzu Framework | 1.4.4 | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. |
+| Cluster Essentials for Linux| 1.5. | Contains [Carvel](https://carvel.dev/) tools |
+| Cluster Essentials Bundle YAML | 1.5 | Contains the SHA hash |
+| Tanzu Framework | 1.5.0 | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. The software bundle is part of the "Tanzu Application Platform" product in Tanzu Network |
 
 
 </br>

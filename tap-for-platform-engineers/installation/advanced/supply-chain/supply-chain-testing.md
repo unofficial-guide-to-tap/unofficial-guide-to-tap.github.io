@@ -37,7 +37,7 @@
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
-      -v "1.4.4" \
+      -v "1.5.0" \
       --values-file values.yaml \
       --wait="false"
     ```
@@ -93,8 +93,8 @@ testing-image-to-url   True    Ready    23s
               - name: test
                 image: gradle
                 script: |-
-                  find /
-                  gradle test
+                  echo "Didnu nuffin. LOL!"
+                  exit 0
     EOF
     ```
 

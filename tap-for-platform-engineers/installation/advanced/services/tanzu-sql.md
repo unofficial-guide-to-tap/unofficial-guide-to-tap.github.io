@@ -1,12 +1,17 @@
 # Tanzu SQL for Kubernetes
 
-1. [Installation](#installation)
-    1. [Relocate Images](#relocate-images)
-    2. [Tanzu Postgres](#install-tanzu-postgres)
-    3. [Tanzu MySQL](#install-tanzu-mysql)
-2. [Usage Examples](#usage-examples)
-    1. [Postgres](#create-a-postgres-database)
-    2. [MySQL](#create-a-mysql-database)
+- [Tanzu SQL for Kubernetes](#tanzu-sql-for-kubernetes)
+  - [Installation](#installation)
+    - [Relocate Images](#relocate-images)
+    - [Tanzu Postgres](#tanzu-postgres)
+      - [Installation](#installation-1)
+      - [Validation](#validation)
+    - [Tanzu MySQL](#tanzu-mysql)
+      - [Installation](#installation-2)
+      - [Validation](#validation-1)
+  - [Usage Examples](#usage-examples)
+    - [Postgres](#postgres)
+    - [MySQL](#mysql)
 ---
 
 Tanzu SQL for Kubernetes provides Kubernetes operators for Postgres and MySQL. In this guide, you will install both operators and create an instance of each service.
@@ -104,10 +109,10 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
     ```
     tanzu package install postgres-operator \
-      --package-name postgres-operator.sql.tanzu.vmware.com \
+      --package postgres-operator.sql.tanzu.vmware.com \
       --version $POSTGRES_VERSION \
       --namespace postgres-tanzu-operator \
-      -f postgres-operator.yaml
+      --values-file postgres-operator.yaml
     ```
 
 #### Validation
@@ -181,10 +186,10 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
     ```
     tanzu package install mysql-operator \
-      --package-name mysql-operator.with.sql.tanzu.vmware.com \
+      --package mysql-operator.with.sql.tanzu.vmware.com \
       --version $MYSQL_VERSION \
       --namespace mysql-tanzu-operator \
-      -f mysql-operator.yaml
+      --values-file mysql-operator.yaml
     ```
 
 #### Validation

@@ -118,7 +118,34 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     kubectl -n tanzu-system-ingress get certs
     ```
 
-2. Allow using this `Certificate` from other `Namespace`s 
+3. Switch to Letsencrypt production
+
+    Knowing we're able to create certificates for our domain now, we can safely switch to Letsencrypt's production API to receive a proper certificate. This intermediate step prevents us from hitting Letsencrypts rate limit in which case we would be locked out of Letsencrypt for a couple of days.
+
+    ```
+    cat <<EOF | kubectl apply -f -
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: tap-cert
+      namespace: tanzu-system-ingress
+    spec:
+      commonName: "*.$DOMAIN"
+      dnsNames:
+      - "*.$DOMAIN"
+      issuerRef:
+        kind: ClusterIssuer
+        name: letsencrypt-dns
+      subject:
+        organizations:
+        - $ORGANIZATION_NAME
+      secretName: tap-cert
+    EOF
+    ```
+
+    As before, wait for the `Certificate` to be successfully created.
+
+4. Allow using this `Certificate` from other `Namespace`s 
     
    Check the [documentation](https://projectcontour.io/docs/1.24/config/tls-delegation/) for more information on `TLSCertificateDelegation`s.
 
@@ -160,7 +187,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
-      -v "1.4.4" \
+      -v "1.5.0" \
       --values-file values.yaml \
       --wait="false"
     ```

@@ -81,10 +81,10 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```
     tanzu package install rabbitmq-operator \
-      --package-name rabbitmq.tanzu.vmware.com \
+      --package rabbitmq.tanzu.vmware.com \
       --version $RABBITMQ_VERSION \
       --namespace tanzu-rabbitmq-operator \
-      -f rabbitmq-operator.yaml
+      --values-file rabbitmq-operator.yaml
     ```
 
 ## Validation
