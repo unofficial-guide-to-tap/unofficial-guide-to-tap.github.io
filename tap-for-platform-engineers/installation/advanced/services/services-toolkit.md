@@ -20,7 +20,8 @@ The following chapters refer to the levels of service consumption as described i
 
 In order to allow app teams to create a `ResourceClaim` in their developer `Namespace` that claims our service resource, we need to create a `ResourceClaimPolicy` which exposes the service resource to the developer `Namespace`. This way, app teams can claim that specific service instance.
 
-![img](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/Images/images-stk-4-levels-2.png)
+![Resource Claims](./images-stk-4-levels-2.png)
+[Source](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/services-toolkit-concepts-service-consumption.html)
 
 Create `ResourceClaimPolicy` that exposes all `Postgres` resources to all `Namespace`s:
 
@@ -45,7 +46,8 @@ EOF
 
 While in level 2, app teams claimed a specific service instances, they merely claim a `ClusterInstanceClass`. That class has a pool of service instances and the app team will receive a free service instance that matches their requirements. Instead of a `ResourceClaim` the app team creates a `ClassClaim`.
 
-![img](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/Images/images-stk-4-levels-3.png)
+![Class Claims](./images-stk-4-levels-3.png)
+[Source](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/services-toolkit-concepts-service-consumption.html)
 
 Create the `ClusterInstanceClass`:
 
@@ -68,12 +70,8 @@ EOF
 
 While in level 3, the `ClusterInstanceClass` had an explicitly defined pool of **existing** service instances, level 4 introduces a provisioner in that place. The provisioner will dynamically provision service instances as claimed via the `ClusterInstanceClass`
 
-![img](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/Images/images-stk-4-levels-4.png)
-
-
-TODO
-
-
+![Dynamic Provisioning](./images-stk-4-levels-4.png)
+[Source](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/services-toolkit-concepts-service-consumption.html)
 
 ## Validation
 
