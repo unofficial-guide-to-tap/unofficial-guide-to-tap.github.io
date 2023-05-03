@@ -49,22 +49,88 @@ While in level 2, app teams claimed a specific service instances, they merely cl
 ![Class Claims](./images-stk-4-levels-3.png)
 [Source](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/services-toolkit-concepts-service-consumption.html)
 
-Create the `ClusterInstanceClass`:
+1. Create the `ClusterInstanceClass`:
 
-```
-cat <<EOF | kubectl apply -f -
-apiVersion: services.apps.tanzu.vmware.com/v1alpha1
-kind: ClusterInstanceClass
-metadata:
-  name: postgres
-spec:
-  description:
-    short: "PostgreSQL Databases"
-  pool:
-    group: sql.tanzu.vmware.com
-    kind: Postgres
-EOF
-```
+    ```
+    cat <<EOF | kubectl apply -f -
+    apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+    kind: ClusterInstanceClass
+    metadata:
+      name: postgres
+    spec:
+      description:
+        short: "PostgreSQL Databases"
+      pool:
+        group: sql.tanzu.vmware.com
+        kind: Postgres
+    EOF
+    ```
+2. Create `ClusterRole` to allows access to that `ClusterInstanceClass`
+
+    ```
+    cat <<EOF | kubectl apply -f -
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: app-operator-claim-class-postgres
+      labels:
+        apps.tanzu.vmware.com/aggregate-to-app-operator-cluster-access: "true"
+    rules:
+    - apiGroups:
+      - services.apps.tanzu.vmware.com
+      resources:
+      - clusterinstanceclasses
+      resourceNames:
+      - postgres
+      verbs:
+      - claim
+    EOF
+    ```
+
+3. Create `ClusterRoleBinding` to `ClusterRole`
+   
+    In the step before, we set the label `apps.tanzu.vmware.com/aggregate-to-app-operator-cluster-access` to `true` which aggregates our rules into the `ClusterRole` called "app-operator-cluster-access". While we could now bind the user to the specific `ClusterRole` created before, we may also bind to "app-operator-cluster-access" to gain wider access to `ClusterInstanceClass`es.
+
+    1. Find your user name
+
+        If your cluster has `APISelfSubjectReview` enable, run
+
+        ```
+        kubectl auth whoami
+        ```
+
+        Otherwise, attempt to create a `ClassClaim` and the resulting error message will reveal your user name:
+
+        ```
+        tanzu -n test service class-claim create petclinic-db --class redit-unmanaged
+        ```
+        Expected output:
+        ```
+        Creating claim 'petclinic-db' in namespace 'test'.
+        Error: admission webhook "vclassclaim.validation.resourceclaims.services.apps.tanzu.vmware.com" denied the request: user 'mathiase@vmware.com' cannot 'claim' from clusterinstanceclass 'redit-unmanaged'
+        ```
+
+    2. Create the `ClusterRoleBinding`
+
+        ```
+        USERNAME="..."
+        ```
+        ```
+        cat <<EOF | kubectl apply -f -
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: mathiase-to-app-operator-cluster-access
+        subjects:
+        - kind: User
+          name: "$USERNAME"
+          apiGroup: rbac.authorization.k8s.io
+        roleRef:
+          kind: ClusterRole
+          name: app-operator-cluster-access
+          apiGroup: rbac.authorization.k8s.io
+        EOF
+        ```
 
 ## Dynamic Provisioning
 
