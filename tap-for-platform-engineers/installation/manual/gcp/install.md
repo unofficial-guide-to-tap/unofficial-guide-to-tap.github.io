@@ -5,7 +5,6 @@
 - [Create A Package Repository Mirror](#create-a-package-repository-mirror)
 - [Install Cluster Essentials](#install-cluster-essentials)
 - [Install The TAP Package](#install-the-tap-package)
-  - [Prepare The Installation Namespace](#prepare-the-installation-namespace)
 - [Create DNS Records](#create-dns-records)
 
 ---
@@ -153,8 +152,6 @@ END: ## Install Cluster Essentials
 -->
 
 ## Install The TAP Package
-
-### Prepare The Installation Namespace
 
 1. Create the installation `Namespace`
     ```
