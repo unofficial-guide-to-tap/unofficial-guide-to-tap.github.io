@@ -1,4 +1,4 @@
-# TAP on GCP - Validation
+# TAP on GCP - Validation <!-- omit from toc -->
 
 - [Access TAP GUI](#access-tap-gui)
 - [Deploy A Test Workload](#deploy-a-test-workload)

@@ -1,12 +1,11 @@
-# TAP on GCP - Prerequisites
-
-<!-- TOC depthfrom:2 depthto:2 orderedlist:false -->
+# TAP on GCP - Prerequisites <!-- omit from toc -->
 
 - [GCP Preparations](#gcp-preparations)
 - [Jump Host Setup](#jump-host-setup)
+  - [Connect To Kubernetes](#connect-to-kubernetes)
+  - [Service Account Key](#service-account-key)
 - [Download Software](#download-software)
 
-<!-- /TOC -->
 ---
 
 ## GCP Preparations

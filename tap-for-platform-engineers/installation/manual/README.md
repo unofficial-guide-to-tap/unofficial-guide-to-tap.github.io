@@ -1,6 +1,6 @@
 # Manual Installation
 
-1. [Google Cloud Platform](./gcp)
+1. [Google Cloud Platform](./gcp/README.md)
 2. Microsoft Azure
 3. Amazon Web Services
 4. VMware Tanzu Kubernetes Grid

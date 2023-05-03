@@ -1,9 +1,9 @@
 # TAP For Platform Engineers
 
-1. [Architecture](./architecture)
-2. [Installation](./installation)
-    1. [Manual Installation](./installation/manual)
-        1. [Google Cloud Platform](./installation/manual/gcp)
+1. [Architecture](./architecture/README.md)
+2. [Installation](./installation/README.md)
+    1. [Manual Installation](./installation/manual/README.md)
+        1. [Google Cloud Platform](./installation/manual/gcp/README.md)
         2. Microsoft Azure
         3. Amazon Web Services
     2. GitOps Installation
