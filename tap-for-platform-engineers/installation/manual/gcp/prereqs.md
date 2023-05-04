@@ -35,7 +35,7 @@ Before you proceed, install the following components:
 
 ### Connect To Kubernetes
 
-```
+```bash
 gcloud auth login
 gcloud container clusters get-credentials CLUSTER_NAME \
   --region REGION \
@@ -45,7 +45,7 @@ gcloud container clusters get-credentials CLUSTER_NAME \
 ### Service Account Key
 
 Create a copy of the Service Account key at `$HOME/key.json`.
-```
+```bash
 vim $HOME/key.json
 ```
 

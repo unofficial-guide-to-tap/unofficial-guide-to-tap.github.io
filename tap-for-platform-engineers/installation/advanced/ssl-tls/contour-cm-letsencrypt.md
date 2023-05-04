@@ -7,11 +7,11 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 1. Create a `Secret` with a GCP service account key.
 
    This will allow Cert Manager to interact with Google Cloud DNS to perform the DNS-01 challenge.
-    ```
+    ```bash
     GOOGLE_APPLICATION_CREDENTIALS="$HOME/key.json"
     KEY_JSON_BASE64=$(cat $GOOGLE_APPLICATION_CREDENTIALS | base64 -w0)
     ```
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: v1
     kind: Secret
@@ -27,12 +27,12 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
    The `ClusterIssuer` tells Cert Manager which `Certificate` requests to handle and how to handle them. We create one for the Letsencrypt Staging API and one for the Production API. This way we can play with it until it works before getting locked out.
 
-    ```
+    ```bash
     PROJECT_ID="..."
     EMAIL_ADDRESS="..."
     DOMAIN="..."
     ```
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
@@ -56,7 +56,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
               - $DOMAIN
     EOF
     ```
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
@@ -87,12 +87,12 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
    By creating `Certificate`s Cert Manager triggers and attempts to generate a signed cert.
 
-    ```
+    ```bash
     DOMAIN="..."
     ORGANIZATION_NAME="..."
     ```
 
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: Certificate
@@ -114,7 +114,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     ```
 
 2. Wait until `Certificate` was signed (READY=true)
-    ```
+    ```bash
     kubectl -n tanzu-system-ingress get certs
     ```
 
@@ -122,7 +122,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
     Knowing we're able to create certificates for our domain now, we can safely switch to Letsencrypt's production API to receive a proper certificate. This intermediate step prevents us from hitting Letsencrypts rate limit in which case we would be locked out of Letsencrypt for a couple of days.
 
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: Certificate
@@ -149,7 +149,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     
    Check the [documentation](https://projectcontour.io/docs/1.24/config/tls-delegation/) for more information on `TLSCertificateDelegation`s.
 
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: projectcontour.io/v1
     kind: TLSCertificateDelegation
@@ -170,7 +170,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
 1. Apply the following changes to your `values.yaml`
 
-    ```
+    ```yaml
     cnrs:
       ingress_issuer: ""
       default_tls_secret: "tanzu-system-ingress/tap-cert"
@@ -183,7 +183,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
 2. Update TAP
 
-    ```
+    ```bash
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
@@ -195,10 +195,10 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 ## Validate
 
 ### TAP GUI
-```
+```bash
 DOMAIN="..."
 ```
-```
+```bash
 openssl s_client -showcerts \
   -servername tap-gui.$DOMAIN \
   -connect tap-gui.$DOMAIN:443 < /dev/null
@@ -210,13 +210,13 @@ If you alread created a test workload, make sure to delete it first. It needs to
 
 
 1. Create a developer namespace
-    ```
+    ```bash
     kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
     kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
     ```
 
 2. Deploy the workload
-    ```
+    ```bash
     tanzu apps workload create petclinic -n test \
       -l "app.kubernetes.io/part-of=petclinic" \
       -l "apps.tanzu.vmware.com/workload-type=web" \
@@ -227,10 +227,10 @@ If you alread created a test workload, make sure to delete it first. It needs to
 
 3. Check certificate
 
-    ```
+    ```bash
     DOMAIN="..."
     ```
-    ```
+    ```bash
     openssl s_client -showcerts \
       -servername petclinic-test.$DOMAIN \
       -connect petclinic-test.$DOMAIN:443 < /dev/null

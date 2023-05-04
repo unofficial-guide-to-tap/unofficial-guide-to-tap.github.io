@@ -25,7 +25,7 @@ In order to allow app teams to create a `ResourceClaim` in their developer `Name
 
 Create `ResourceClaimPolicy` that exposes all `Postgres` resources to all `Namespace`s:
 
-```
+```bash
 cat <<EOF | kubectl -n service-instances apply -f -
 apiVersion: services.apps.tanzu.vmware.com/v1alpha1
 kind: ResourceClaimPolicy
@@ -51,7 +51,7 @@ While in level 2, app teams claimed a specific service instances, they merely cl
 
 1. Create the `ClusterInstanceClass`:
 
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: services.apps.tanzu.vmware.com/v1alpha1
     kind: ClusterInstanceClass
@@ -67,7 +67,7 @@ While in level 2, app teams claimed a specific service instances, they merely cl
     ```
 2. Create `ClusterRole` to allows access to that `ClusterInstanceClass`
 
-    ```
+    ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRole
@@ -95,13 +95,13 @@ While in level 2, app teams claimed a specific service instances, they merely cl
 
         If your cluster has `APISelfSubjectReview` enable, run
 
-        ```
+        ```bash
         kubectl auth whoami
         ```
 
         Otherwise, attempt to create a `ClassClaim` and the resulting error message will reveal your user name:
 
-        ```
+        ```bash
         tanzu -n test service class-claim create petclinic-db --class redit-unmanaged
         ```
         Expected output:
@@ -112,10 +112,10 @@ While in level 2, app teams claimed a specific service instances, they merely cl
 
     2. Create the `ClusterRoleBinding`
 
-        ```
+        ```bash
         USERNAME="..."
         ```
-        ```
+        ```bash
         cat <<EOF | kubectl apply -f -
         apiVersion: rbac.authorization.k8s.io/v1
         kind: ClusterRoleBinding
@@ -145,7 +145,7 @@ While this step is normally a typcial step you would take as a platform engineer
 
 
 1. Create a developer `Namespace`
-    ```
+    ```bash
     kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
     kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
     ```
@@ -160,7 +160,7 @@ While this step is normally a typcial step you would take as a platform engineer
 
     2. If the service is exposed via `ClusterInstanceClass`
 
-        ```
+        ```bash
         tanzu services classes list
         ```
         Expected output:
@@ -177,7 +177,7 @@ While this step is normally a typcial step you would take as a platform engineer
 
     1. If the service is exposed via `ResourceClaimPolicy`
 
-        ```
+        ```bash
         tanzu service resource-claim create petclinic-db \
           -n test \
           --resource-api-version sql.tanzu.vmware.com/v1 \
@@ -186,7 +186,7 @@ While this step is normally a typcial step you would take as a platform engineer
           --resource-namespace service-instances
         ```
         Validate the successful claim
-        ```
+        ```bash
         tanzu -n test services resource-claim list 
         ```
         Expected output:
@@ -197,11 +197,11 @@ While this step is normally a typcial step you would take as a platform engineer
 
     2. If the service is exposed via `ClusterInstanceClass`
 
-        ```
+        ```bash
         tanzu -n test service class-claim create petclinic-db --class postgres        
         ```
         Validate the successful claim
-        ```
+        ```bash
         tanzu -n test services class-claim list 
         ```
         Expected output:
@@ -214,7 +214,7 @@ While this step is normally a typcial step you would take as a platform engineer
 
     The `--service-ref` parameter create the binding with the service by referencing the `ResourceClaim` or `ClassClaim` created earlier.
 
-    ```
+    ```bash
     tanzu apps workload create petclinic -n test \
       -l "app.kubernetes.io/part-of=petclinic" \
       -l "apps.tanzu.vmware.com/workload-type=web" \
@@ -229,7 +229,7 @@ While this step is normally a typcial step you would take as a platform engineer
 
 5. Note that `tanzu apps workload get` now displays a "Services" section with the reflective service reference (`ClassClaim` in the example below)
 
-    ```
+    ```bash
     tanzu apps workload get petclinic --namespace test
     ```
     Expected output

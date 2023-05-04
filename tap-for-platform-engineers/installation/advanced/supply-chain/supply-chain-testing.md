@@ -4,7 +4,7 @@
 
 1. Validate the `Package` "ootb-supply-chain-basic" is installed:
 
-    ```
+    ```bash
     tanzu -n tap-install package installed list | grep supply
     ```
     Expected output:
@@ -13,7 +13,7 @@
     ```
 
 2. List available `ClusterSupplyChain`s in the cluster:
-    ```
+    ```bash
     kubectl get clustersupplychains
     ```
     Expected output:
@@ -27,13 +27,13 @@
 
 1. Make the following changes to your `values.yaml`: 
 
-    ```
+    ```yaml
     supply_chain: testing
     ```
 
 2. Update your TAP deployment
 
-    ```
+    ```bash
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
@@ -46,7 +46,7 @@
 
 ### Validate Successful Installation
 
-```
+```bash
 kubectl get clustersupplychains
 ```
 Expected output:
@@ -59,14 +59,14 @@ testing-image-to-url   True    Ready    23s
 ### Run A Workload With Testing
 
 1. Create a developer namespace
-    ```
+    ```bash
     kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
     kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
     ```
 
 1. Create a compatible Tekton `Pipeline`
 
-    ```
+    ```bash
     cat <<EOF | kubectl -n test apply -f -
     apiVersion: tekton.dev/v1beta1
     kind: Pipeline
@@ -100,7 +100,7 @@ testing-image-to-url   True    Ready    23s
 
 3. Create a `Workload` to be tested
 
-    ```
+    ```bash
     tanzu apps workload create petclinic -n test \
       -l "app.kubernetes.io/part-of=petclinic" \
       -l "apps.tanzu.vmware.com/workload-type=web" \
@@ -113,7 +113,7 @@ testing-image-to-url   True    Ready    23s
 4. Watch the progress
 
     Did a `PipelineRun` get created?
-    ```
+    ```bash
     kubectl -n test get pipelinerun
     ```
     Expected output:
@@ -123,7 +123,7 @@ testing-image-to-url   True    Ready    23s
     ```
 
     Did a `Pod` get started to execute the tests?
-    ```
+    ```bash
     kubectl -n test get pods
     ```
     Expected output:
@@ -134,7 +134,7 @@ testing-image-to-url   True    Ready    23s
     ```
 
     What's the log output of the test?
-    ```
+    ```bash
     kubectl -n test logs -f petclinic-89vwv-test-pod
     ```
     Expected output:

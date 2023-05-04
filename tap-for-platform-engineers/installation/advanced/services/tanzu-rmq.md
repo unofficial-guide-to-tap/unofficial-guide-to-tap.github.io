@@ -2,7 +2,7 @@
 
 Make sure set up the folloring variables before proceeding with this guide:
 
-```
+```bash
 RABBITMQ_VERSION="1.4.0"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
@@ -23,7 +23,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 ## Relocate Images
 
 1. Docker login to Tanzu Network
-    ```
+    ```bash
     echo "$TANZUNET_PASSWORD" | \
     docker login registry.tanzu.vmware.com \
       -u $TANZUNET_USERNAME \
@@ -31,7 +31,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
 
 2. Docker login to your container registry
-    ```
+    ```bash
     echo "$INSTALL_REGISTRY_PASSWORD" | \
     docker login $INSTALL_REGISTRY_HOSTNAME \
       -u $INSTALL_REGISTRY_USERNAME \
@@ -40,7 +40,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 3. Mirror the packages
 
-    ```
+    ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/p-rabbitmq-for-kubernetes/tanzu-rabbitmq-package-repo:$RABBITMQ_VERSION \
       --to-repo $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages
@@ -50,12 +50,12 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 1. Create the `Namespace` for the operator
 
-    ```
+    ```bash
     kubectl create ns tanzu-rabbitmq-operator
     ```
 
 2. Set up a `Secret` with credentials to the container registry containing the `Package`s
-    ```
+    ```bash
     kubectl create secret docker-registry regsecret \
       --namespace tanzu-rabbitmq-operator \
       --docker-server=$INSTALL_REGISTRY_HOSTNAME \
@@ -65,7 +65,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     
 3. Register the `PackageRepository`
 
-    ```
+    ```bash
     tanzu package repository add tanzu-rabbitmq-repository \
       --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages:$RABBITMQ_VERSION \
       --namespace tanzu-rabbitmq-operator
@@ -73,13 +73,13 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 4. Install the `Package` for the RabbitMQ operator
 
-    ```
+    ```bash
     cat <<EOF > rabbitmq-operator.yaml
     ---
     EOF
     ```
 
-    ```
+    ```bash
     tanzu package install rabbitmq-operator \
       --package rabbitmq.tanzu.vmware.com \
       --version $RABBITMQ_VERSION \
@@ -91,7 +91,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 Check availability of CRDs:
 
-```
+```bash
 kubectl api-resources | grep rabbitmq
 ```
 
@@ -116,13 +116,13 @@ standbyreplications               sr                                     rabbitm
 
 1. Create a `Namespace` to run the service instances
 
-    ```
+    ```bash
     kubectl create namespace service-instances
     ```
 
 2. Create a `Secret` to access RabbitMQ related images
 
-    ```
+    ```bash
     kubectl create secret docker-registry regsecret \
       --namespace service-instances \
       --docker-server=$INSTALL_REGISTRY_HOSTNAME \
@@ -132,7 +132,7 @@ standbyreplications               sr                                     rabbitm
 
 3. Deploy an instance of `RabbitmqCluster`
 
-    ```
+    ```bash
     cat <<EOF | kubectl -n service-instances apply -f -
     apiVersion: rabbitmq.com/v1beta1
     kind: RabbitmqCluster
@@ -146,7 +146,7 @@ standbyreplications               sr                                     rabbitm
 
 5. After a while, the resources should have deployed successfully. Run the following command to verify:
 
-    ```
+    ```bash
     kubectl -n service-instances get rabbitmqclusters,pods,services
     ```
 

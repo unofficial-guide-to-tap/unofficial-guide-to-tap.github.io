@@ -11,26 +11,27 @@
 
 ## Install Tanzu CLI
 
+
 1. Extract the downloaded archive
-    ```
+    ```bash
     mkdir tanzu-framework
     tar xvf tanzu-framework-linux-amd64-v0.28.1.1.tar -C tanzu-framework
     cd tanzu-framework
     ```
 
 2. Install the executable
-    ```
+    ```bash
     sudo install cli/core/v0.28.1/tanzu-core-linux_amd64 /usr/local/bin/tanzu
     ```
 
 3. Install the shipped plugins
-    ```
+    ```bash
     export TANZU_CLI_NO_INIT=true
     tanzu plugin install --local cli all
     ```
 
 4. Validate the installation
-    ```
+    ```bash
     tanzu version
     tanzu plugin list
     ```
@@ -40,14 +41,14 @@ The binaries we need to have installed are shipping with the previously download
 
 1. Extract the downloaded archive
 
-    ```
+    ```bash
     mkdir cluster-essentials
     tar xvf tanzu-cluster-essentials-linux-amd64-1.5.0.tgz -C cluster-essentials
     cd cluster-essentials
     ```
 
 2. Install the executables
-    ```
+    ```bash
     sudo install ./imgpkg /usr/local/bin/imgpkg
     sudo install ./kapp /usr/local/bin/kapp
     sudo install ./kbld /usr/local/bin/kbld
@@ -55,7 +56,7 @@ The binaries we need to have installed are shipping with the previously download
     ```
 
 3. Validate the installation
-    ```
+    ```bash
     imgpkg --version
     kapp --version
     kbld --version
@@ -65,7 +66,7 @@ The binaries we need to have installed are shipping with the previously download
 ## Create A Package Repository Mirror
 
 1. Docker login to Tanzu Network
-    ```
+    ```bash
     TANZUNET_USERNAME="..."
     TANZUNET_PASSWORD="..."
 
@@ -77,12 +78,12 @@ The binaries we need to have installed are shipping with the previously download
 
     If your receive a "permission denied" error in this step, your Linux user account probably just isn't in the `docker` group. Run the following command, then logout and and log back in again:
 
-    ```
+    ```bash
     sudo addgroup tapadmin docker
     ```
 
 2. Docker login to Google Container Registry (GCR)
-    ```
+    ```bash
     # gcloud auth login # If you haven't already done so
     gcloud auth configure-docker
     ```
@@ -91,11 +92,11 @@ The binaries we need to have installed are shipping with the previously download
 
     The SHA hash used in this section is taken from the file `foo` that you downloaded before. In case you're using a different version, you may extract that hash from the yaml with the following command:
 
-    ```
+    ```bash
     cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2
     ```
 
-    ```
+    ```bash
     SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
     HOST="gcr.io"
     REPO="YOUR_PROJECT_ID"
@@ -109,7 +110,7 @@ The binaries we need to have installed are shipping with the previously download
     The whole process should not take more than a minute or two.
 
 3. Mirror TAP packages
-    ```
+    ```bash
     VERSION="1.5.0"
     HOST="gcr.io"
     REPO="YOUR_PROJECT_ID"
@@ -129,7 +130,7 @@ END: ## Create A Package Repository Mirror
 ## Install Cluster Essentials
 
 1. Setup environment variables
-    ```
+    ```bash
     GOOGLE_APPLICATION_CREDENTIALS="$HOME/key.json"
     SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
     HOST="gcr.io"
@@ -142,7 +143,7 @@ END: ## Create A Package Repository Mirror
     ```
 
 2. Run the installation script
-    ```
+    ```bash
     cd cluster-essentials
     ./install.sh --yes
     ```
@@ -154,13 +155,13 @@ END: ## Install Cluster Essentials
 ## Install The TAP Package
 
 1. Create the installation `Namespace`
-    ```
+    ```bash
     kubectl create namespace tap-install
     ```
 
 2. Create registry `Secret`
 
-    ```
+    ```bash
     tanzu secret registry add tap-registry \
       --username "_json_key" \
       --password-file $HOME/key.json \
@@ -170,7 +171,7 @@ END: ## Install Cluster Essentials
 
 2. Create `PackageRepository`
 
-    ```
+    ```bash
     VERSION="1.5.0"
     HOST="gcr.io"
     REPO="..."
@@ -182,10 +183,10 @@ END: ## Install Cluster Essentials
 
 3. Create the TAP configuration file
 
-    ```
+    ```bash
     vim values.yaml
     ```
-    ```
+    ```yaml
     shared:
       ingress_domain: YOUR_DOMAIN
 
@@ -217,7 +218,7 @@ END: ## Install Cluster Essentials
 
 1. Install the `tap` package with that configuration
 
-    ```
+    ```bash
     tanzu package install tap \
       -p tap.tanzu.vmware.com \
       -v "1.5.0" \
@@ -228,7 +229,7 @@ END: ## Install Cluster Essentials
 
 2. Watch progress of the `PackageInstall`s
 
-    ```
+    ```bash
     tanzu -n tap-install package installed list
     ```
 

@@ -20,7 +20,7 @@ Tanzu SQL for Kubernetes provides Kubernetes operators for Postgres and MySQL. I
 
 Make sure set up the folloring variables before proceeding with this guide:
 
-```
+```bash
 TDS_VERSION="1.7.0"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
@@ -47,7 +47,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 ### Relocate Images
 
 1. Docker login to Tanzu Network
-    ```
+    ```bash
     echo "$TANZUNET_PASSWORD" | \
     docker login registry.tanzu.vmware.com \
       -u $TANZUNET_USERNAME \
@@ -55,7 +55,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
 
 2. Docker login to your container registry
-    ```
+    ```bash
     echo "$INSTALL_REGISTRY_PASSWORD" | \
     docker login $INSTALL_REGISTRY_HOSTNAME \
       -u $INSTALL_REGISTRY_USERNAME \
@@ -66,7 +66,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 3. Mirror the packages
 
-    ```
+    ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:$TDS_VERSION \
       --to-repo $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages
@@ -78,13 +78,13 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 1. Create the `Namespace` for the operator
 
-    ```
+    ```bash
     kubectl create ns postgres-tanzu-operator
     ```
 
 2. Set up a `Secret` with credentials to the container registry containing the `Package`s
 
-    ```
+    ```bash
     kubectl create secret docker-registry regsecret \
       --namespace postgres-tanzu-operator \
       --docker-server=$INSTALL_REGISTRY_HOSTNAME \
@@ -94,7 +94,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 3. Register the `PackageRepository`
 
-    ```
+    ```bash
     tanzu package repository add tanzu-data-services-repository \
       --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:$TDS_VERSION \
       --namespace postgres-tanzu-operator
@@ -102,12 +102,12 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 4. Install the `Package` for the Postgres operator
 
-    ```
+    ```bash
     cat <<EOF > postgres-operator.yaml
     dockerRegistrySecretName: regsecret
     EOF
     ```
-    ```
+    ```bash
     tanzu package install postgres-operator \
       --package postgres-operator.sql.tanzu.vmware.com \
       --version $POSTGRES_VERSION \
@@ -119,7 +119,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 1. Check availability of CRDs
 
-    ```
+    ```bash
     kubectl api-resources | grep postgres
     ```
 
@@ -135,7 +135,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 2. Check available Postgres versions
 
-    ```
+    ```bash
     kubectl get postgresversions
     ```
     Expected output:
@@ -155,13 +155,13 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 1. Create the `Namespace` for the operator
 
-    ```
+    ```bash
     kubectl create ns mysql-tanzu-operator
     ```
 
 2. Set up a `Secret` with credentials to the container registry containing the `Package`s
 
-    ```
+    ```bash
     kubectl create secret docker-registry regsecret \
       --namespace mysql-tanzu-operator \
       --docker-server=$INSTALL_REGISTRY_HOSTNAME \
@@ -171,7 +171,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 3. Register the `PackageRepository`
 
-    ```
+    ```bash
     tanzu package repository add tanzu-data-services-repository \
       --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:$TDS_VERSION \
       --namespace mysql-tanzu-operator
@@ -179,7 +179,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 4. Install the `Package` for the MySQL operator
 
-    ```
+    ```bash
     cat <<EOF > mysql-operator.yaml
     imagePullSecretName: regsecret
     EOF
@@ -196,7 +196,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 1. Check availability of CRDs
 
-    ```
+    ```bash
     kubectl api-resources | grep mysql
     ```
 
@@ -212,7 +212,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 2. Check available MySQL versions
 
-    ```
+    ```bash
     kubectl get mysqlversions
     ```
     Expected output:
@@ -229,11 +229,11 @@ INSTALL_REGISTRY_PASSWORD="..."
 
 ## Usage Examples
 
-```
+```bash
 kubectl create namespace service-instances
 ```
 
-```
+```bash
 kubectl create secret docker-registry regsecret \
   --namespace service-instances \
   --docker-server=$INSTALL_REGISTRY_HOSTNAME \
@@ -243,7 +243,7 @@ kubectl create secret docker-registry regsecret \
 
 ### Postgres
 
-```
+```bash
 cat <<EOF | kubectl -n service-instances apply -f -
 apiVersion: sql.tanzu.vmware.com/v1
 kind: Postgres
@@ -256,7 +256,7 @@ spec:
 EOF
 ```
 
-```
+```bash
 kubectl -n service-instances get postgres,pods,services
 ```
 
@@ -276,7 +276,7 @@ service/pg-1-agent   ClusterIP   None          <none>        <none>     53m
 
 ### MySQL
 
-```
+```bash
 cat <<EOF | kubectl -n service-instances apply -f -
 apiVersion: with.sql.tanzu.vmware.com/v1
 kind: MySQL
@@ -289,7 +289,7 @@ spec:
 EOF
 ```
 
-```
+```bash
 kubectl -n service-instances get mysql,pods,services
 ```
 

@@ -8,7 +8,7 @@
 
         Instead of the default value of `basic`, we use `testing_scanning` to tell the "tap" `Package` to install the `Package` called "ootb-supply-chain-testing-scanning" for the OOTB supply chain. This will delete any other ootb supply chain `Package`.
 
-        ```
+        ```yaml
         supply_chain: testing_scanning
         ````
 
@@ -17,7 +17,7 @@
         This tells the `Package` that installs the Metadata Store service, to create a `SecretExport` of the certificate to all other namespaces in the cluster. This way, our developer namespaces will have an `app-tls-cert` which allows Grype to connect and push scan results to the Metadata Store.
 
 
-        ```
+        ```yaml
         metadata_store:
           ns_for_export_app_cert: "*"
         ```
@@ -26,12 +26,12 @@
 
       In order to see scan results in TAP GUI, the UI will make a call to `/api/proxy/metadata-store/sources/vulnerabilities` which is a proxy that needs to be setup to forward this request to the Metadata Store service. This proxy needs to be configured manually. As Metadata Store authorizes any incoming request via bearer token, TAP GUI needs to have that token.
 
-      ```
+      ```bash
       kubectl get secrets metadata-store-read-write-client -n metadata-store \
         -o jsonpath="{.data.token}" | base64 -d
       ```
 
-      ```
+      ```yaml
       tap_gui:
         app_config:
           proxy:
@@ -46,7 +46,7 @@
 
 2. Update your TAP deployment
 
-    ```
+    ```bash
     tanzu package installed update tap \
       -n "tap-install" \
       -p tap.tanzu.vmware.com \
@@ -57,7 +57,7 @@
 
 3. Wait for all `Package`s to reconcile
 
-    ```
+    ```bash
     tanzu -n tap-install package installed list
     ```
 
@@ -65,7 +65,7 @@
 
 ### Validate Successful Installation
 
-```
+```bash
 kubectl get clustersupplychains
 ```
 Expected output:
@@ -78,14 +78,14 @@ source-test-scan-to-url      True    Ready    5m3s
 ### Run A Workload With Testing
 
 1. Create a developer namespace
-    ```
+    ```bash
     kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
     kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
     ```
 
 1. Create a compatible Tekton `Pipeline`
 
-    ```
+    ```bash
     cat <<EOF | kubectl -n test apply -f -
     apiVersion: tekton.dev/v1beta1
     kind: Pipeline
@@ -123,7 +123,7 @@ source-test-scan-to-url      True    Ready    5m3s
     
     **Note:** With a more restrictive `ScanPolicy` the code deloyed in the next step (spring-petclinic) will fail that step.
 
-    ```
+    ```bash
     cat <<EOF | kubectl -n test apply -f -
     apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
     kind: ScanPolicy
@@ -171,7 +171,7 @@ source-test-scan-to-url      True    Ready    5m3s
 
 3. Create a `Workload` to be tested and scanned
 
-    ```
+    ```bash
     tanzu apps workload create petclinic -n test \
       -l "app.kubernetes.io/part-of=petclinic" \
       -l "apps.tanzu.vmware.com/workload-type=web" \
@@ -185,7 +185,7 @@ source-test-scan-to-url      True    Ready    5m3s
 
     Run the following command and wait for the scan `Pod` to complete.
 
-    ```
+    ```bash
     tanzu apps workload get petclinic --namespace test
     ```
 
