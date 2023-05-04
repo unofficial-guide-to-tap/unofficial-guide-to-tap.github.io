@@ -8,14 +8,13 @@
 
         Instead of the default value of `basic`, we use `testing_scanning` to tell the "tap" `Package` to install the `Package` called "ootb-supply-chain-testing-scanning" for the OOTB supply chain. This will delete any other ootb supply chain `Package`.
 
-        ```yaml
+        ```
         supply_chain: testing_scanning
-        ````
+        ```
 
     2. Export the Metadata Store certificate to all `Namespace`s
 
         This tells the `Package` that installs the Metadata Store service, to create a `SecretExport` of the certificate to all other namespaces in the cluster. This way, our developer namespaces will have an `app-tls-cert` which allows Grype to connect and push scan results to the Metadata Store.
-
 
         ```yaml
         metadata_store:
