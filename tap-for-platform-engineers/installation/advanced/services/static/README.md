@@ -27,16 +27,26 @@ Like with [External Services](tap-for-platform-engineers/installation/advanced/s
 
 This guide will not document method 1 again as it is the least preferrable one. Instead, we will focus on service class at the example of a PostgreSQL service instance represented by a `Postgres` resource that looks as follows:
 
+```bash
+kubectl get postres -n service-instances pg-1 -o yaml
+```
+
 ```yaml
-group: 
+apiVersion: sql.tanzu.vmware.com/v1
 kind: Postgres
 metadata:
-  name: postgres-1
+  name: pg-1
+  namespace: service-instances
+  ...
 spec:
+  postgresVersion:
+    name: postgres-15
+  storageSize: 1G
   ...
 status:
   binding:
-    name: ...
+    name: pg-1-app-user-db-secret
+  ...
 ```
 
 As you can see by the `status.binding.name` attribute, this `Postgres` resource is service binding compatible. Jackpot!
@@ -48,11 +58,11 @@ As you can see by the `status.binding.name` attribute, this `Postgres` resource 
     apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRole
     metadata:
-    name: access-service-instance-postgres
-    labels:
-      servicebinding.io/controller: "true"
+      name: access-service-instance-postgres
+      labels:
+        servicebinding.io/controller: "true"
     rules:
-      - apiGroups: ["?"]
+      - apiGroups: ["sql.tanzu.vmware.com"]
         resources: ["postgres"]
         verbs: ["get", "list", "watch"]
     EOF
@@ -72,7 +82,7 @@ As you can see by the `status.binding.name` attribute, this `Postgres` resource 
     description:
       short: Tanzu PostgreSQL
     pool:
-      group: ?
+      group: sql.tanzu.vmware.com
       kind: Postgres
   EOF
   ```
@@ -88,13 +98,13 @@ tanzu service classes list
 Expected output:
 ```
 NAME                  DESCRIPTION
-ext-postgres          PostgreSQL managed by our DBAs
+tanzu-postgres        Tanzu PostgreSQL
 ```
 
 Knowing the class name, a user may now list available service instances in the class:
 
 ```bash
-tanzu service claimable list --class ext-postgres --namespace service-instances
+tanzu service claimable list --class tanzu-postgres --namespace service-instances
 ```
 
 Expected output:
