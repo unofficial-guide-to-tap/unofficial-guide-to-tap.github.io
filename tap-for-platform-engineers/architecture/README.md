@@ -1,5 +1,7 @@
 # Architecture
 
+Before installing any significantly complex system, it is worth having a look at some basic architecture that helps to understand what get's installed but also supports in understanding what to expect and therefore how to validate if installed components work. Have a look at the following picture and read the sections below to get some explanations. We didn't try to squeeze in every possible aspect of the architecture but rather limited the illustration to what we think is necessary to gain a basic understanding.
+
 ![TAP Architecture](./architecture.jpg)
 
 The following sections provide details on the key components and aspects of TAP's architecture:
