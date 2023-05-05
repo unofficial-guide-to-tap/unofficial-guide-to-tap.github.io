@@ -1,2 +1,7 @@
 # Static Provisioning
 
+Technically, working with [External Services](tap-for-platform-engineers/installation/advanced/services/external/README.md) is a form of static provisioning with the caveat that service instances aren't actually provisioned on Kubernetes. In that module, we viewed service instances as external factor and demonstrated how to hook them into the machanics of Services Toolkit by creating a `Secret`. In this module, we want to take a look at actually provisioning service instances on Kubernetes and what that looks like integrating into Services Toolkit. 
+
+## Deploying Services
+
+Before we can think about exposing those services and making them claimable for app teams, we need to extend our Kubernetes cluster with the capability to provision services through Kubernetes's declarative API. The same way we create a `Pod`, a `PersistentVolume` or an `HttpProxy`, we want to be able to create a `Postgres`, `MySQL` or `RabbitmqCluster` and have Kubernetes - or rather the respective controller - to go out and take care of the actual provisioning. The creation of that resource can happen dynamically (see module on [Dynamic Provisioning](tap-for-platform-engineers/installation/advanced/services/dynamic/README.md)) or statically (by hand) as we're going to cover in this module.
