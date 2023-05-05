@@ -128,7 +128,7 @@ This approach is less specific when it comes to mapping services instances to ap
 
 #### Validation
 
-App teams may now discover available classes and claim instances from the pool:
+App teams may now discover available classes:
 
 ```bash
 tanzu service classes list
@@ -138,6 +138,8 @@ Expected output:
 NAME                  DESCRIPTION
 ext-postgres          PostgreSQL managed by our DBAs
 ```
+
+Knowing the class name, a user may now list available service instances in the class:
 
 ```bash
 tanzu service claimable list --class ext-postgres --namespace service-instances
