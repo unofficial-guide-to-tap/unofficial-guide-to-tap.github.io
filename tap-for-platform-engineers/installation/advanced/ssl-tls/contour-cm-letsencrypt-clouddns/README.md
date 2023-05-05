@@ -2,6 +2,9 @@
 
 This guide will setup TLS termination at the Kubernetes Ingress and make sure the services TAP GUI and any deployed `Workload`s are secured by default. The `Certificate` will be handled by Cert Manager and generated via Letsencrypt and a DNS-01 challenge via Google Cloud DNS.
 
+> The `values.yaml` supports a `shared.ingress_issuer` attribute which causes CNRS and other services to use a specified `ClusterIssuer` to create `Certificate`s. CNRS will generate a unique host name for each deployed app and therefore will use the `ClusterIssuer` each time an application gets deployed. Letsencrypt secures their API (production, not staging) with a rate limit whic - once the limit is reached - will lock the account out for about a week! For this reason, in this guide we create a single `Certificate` that will work for all endpoints including applications (wildcard certificate) manually and reference it in the `values.yaml`.
+
+
 ## Create Cluster Issuers
 
 1. Create a `Secret` with a GCP service account key.
@@ -83,9 +86,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
 ## Generate Certificates
 
-1. Create the `Certificate` resources
-
-   By creating `Certificate`s Cert Manager triggers and attempts to generate a signed cert.
+1. Create the `Certificate`
 
     ```bash
     DOMAIN="..."
@@ -163,8 +164,6 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
             - "*"
     EOF
     ```
-
-
 
 ## Configure TAP for TLS
 
