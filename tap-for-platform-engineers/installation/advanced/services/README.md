@@ -1,27 +1,15 @@
-# Add Data Services
+# Provide Data Services
 
-1. [Kubernetes Extensions](#kubernetes-extensions)
-    1. [Tanzu SQL for Kubernetes](tap-for-platform-engineers/installation/advanced/services/tanzu-sql.md)
-    2. [Tanzu RabbitMQ for Kubernetes](tap-for-platform-engineers/installation/advanced/services/tanzu-rmq.md)
-    3. [Crossplane](https://www.crossplane.io/)
-    4. [Config Connector](https://cloud.google.com/config-connector/docs/overview)
-2. [Services Toolkit](tap-for-platform-engineers/installation/advanced/services/services-toolkit.md)
----
+TAP provides the following pieces related to data services:
 
-As a platform engineer providing TAP to your customers, you will be sooner or later be asked to provide access to services such as database, message queues or caches. This guide, covers the steps necessary to add this functionality to your developer platform.
+* **Services Binding:** The service binding specification allows to "bind" services to applications. [Read more](https://servicebinding.io/) 
+* **Crossplane:** Crossplane allows the integration of AWS, Azure or GCP (among other) as a declarative API [Read more](https://www.crossplane.io/)
+* **Services Toolkit:** The services toolkit is TAP's glue between services operators and application teams that allows them to discover, claim or provision services. [Read more](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/services-toolkit-concepts-service-consumption.html)
 
-## Kubernetes Extensions
+Using the components mentioned above, we can create a self-service experience while maintaining the options to either provision services dynamically and on-demand or have full control over the process. 
 
-The most common way to integrate data services in TAP is to lifecycle those services directly on Kubernetes. This is normally done by extending the Kubernetes API by resource types specific to the services to manage. Very much like `Pod` or `Deployment` you now have resources like `Postgres` or `RabbitmqCluster` available in your Kubernetes cluster. 
+This guide covers the following use cases:
 
-Depending on the cloud platform you're running on, different options exist to add data services capabilities to TAP. The following list is not meant to be complete. It only represents those, we have tested with. 
-
-| Extension | Cloud Platform | Included in TAP |
-|:---|---|---|
-| [Tanzu SQL for Kubernetes](./tanzu-sql.md) | any | NO |
-| [Tanzu RabbitMQ for Kubernetes](./tanzu-rmq.md) | any | NO |
-| [Crossplane](https://www.crossplane.io/) | any | YES |
-| [Bitnami](https://bitnami.com/) | any | YES |
-| [Config Connector](https://cloud.google.com/config-connector/docs/overview) | GCP | NO |
-
-Follow one of the links above to learn how to install and use the respective integration.
+* **[External Services](tap-for-platform-engineers/installation/advanced/services/external/README.md):** Integrate external services such as databases managed by your DB team into TAP for consumption.
+* **[Static Provisioning](tap-for-platform-engineers/installation/advanced/services/static/README.md):** Manually deploy services on Kubernetes and expose them to application teams for consumption.
+* **[Dynamic Provisioning](tap-for-platform-engineers/installation/advanced/services/dynamic/README.md):** Let application teams manage the lifecycle of services and trigger service deployments on-demand.
