@@ -1,6 +1,5 @@
-As a **Platform Engineer**, I want to
 # Secure Endpoints With SSL/TLS
 
 There are multiple ways to add SSL/TLS termination to TAP. Depending on your environment, you might one or the other to be more suitable for your needs.
 
-1. [Contour, Cert Manager, Letsencrypt](tap-for-platform-engineers/installation/advanced/ssl-tls/contour-cm-letsencrypt.md)
+* [Contour, Cert Manager, Letsencrypt](tap-for-platform-engineers/installation/advanced/ssl-tls/contour-cm-letsencrypt-clouddns/README.md)

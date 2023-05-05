@@ -1,6 +1,6 @@
-# OOTB Supply Chain With Testing
+# Install The OOTB Supply Chain With Testing
 
-## Optional: Validate Installed Supply Chains
+## Pre-Checks
 
 1. Validate the `Package` "ootb-supply-chain-basic" is installed:
 
@@ -23,7 +23,7 @@
     source-to-url        True    Ready    4d18h
     ```
 
-## Install The Supply Chain With Testing
+## Installation Procedure
 
 1. Make the following changes to your `values.yaml`: 
 
@@ -42,7 +42,7 @@
       --wait="false"
     ```
 
-## Validation 
+## Validate
 
 ### Validate Successful Installation
 

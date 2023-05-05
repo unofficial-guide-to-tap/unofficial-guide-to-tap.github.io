@@ -1,8 +1,8 @@
-# SSL/TLS With Contour, Cert Manager And Letsencrypt
+# SSL/TLS With Contour, Cert Manager And Letsencrypt & CloudDNS
 
 This guide will setup TLS termination at the Kubernetes Ingress and make sure the services TAP GUI and any deployed `Workload`s are secured by default. The `Certificate` will be handled by Cert Manager and generated via Letsencrypt and a DNS-01 challenge via Google Cloud DNS.
 
-## Configure Cert Manager
+## Create Cluster Issuers
 
 1. Create a `Secret` with a GCP service account key.
 

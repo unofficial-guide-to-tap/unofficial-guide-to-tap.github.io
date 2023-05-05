@@ -1,6 +1,29 @@
-# OOTB Supply Chain With Testing And Scanning
+# Install The OOTB Supply Chain With Testing And Scanning
 
-## Install The Supply Chain With Testing And Scanning
+## Pre-Checks
+
+1. Validate the `Package` "ootb-supply-chain-basic" is installed:
+
+    ```bash
+    tanzu -n tap-install package installed list | grep supply
+    ```
+    Expected output:
+    ```
+    ootb-supply-chain-basic   ootb-supply-chain-basic.tanzu.vmware.com      0.11.3            Reconcile succeeded
+    ```
+
+2. List available `ClusterSupplyChain`s in the cluster:
+    ```bash
+    kubectl get clustersupplychains
+    ```
+    Expected output:
+    ```
+    NAME                 READY   REASON   AGE
+    basic-image-to-url   True    Ready    4d18h
+    source-to-url        True    Ready    4d18h
+    ```
+
+## Installation Procedure
 
 1. Update `values.yaml`
 
