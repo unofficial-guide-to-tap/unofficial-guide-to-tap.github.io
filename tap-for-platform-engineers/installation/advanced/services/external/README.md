@@ -54,7 +54,7 @@ rules:
 EOF
 ```
 
-### Direct Claims
+### Option 1: Direct Claim
 
 In this method, we create a `ResourceClaimPolicy` telling Services Toolkit about the `Secret` that represents the service. Using the policy, we can choose the developer `Namespace`s that may discover and claim the service instance or expose it to all `Namespace`s using a wildcard (`*`).
 
@@ -92,7 +92,7 @@ tanzu service claim create postgres-db \
   --resource-api-version v1
 ```
 
-### Service Class
+### Option 2: Service Class
 
 #### Configuration
 
