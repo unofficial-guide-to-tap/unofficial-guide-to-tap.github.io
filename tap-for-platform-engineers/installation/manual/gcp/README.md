@@ -1,4 +1,4 @@
-# Installation On GCP
+# Installation On Google Cloud Platform
 
 ## Prerequisites
 
