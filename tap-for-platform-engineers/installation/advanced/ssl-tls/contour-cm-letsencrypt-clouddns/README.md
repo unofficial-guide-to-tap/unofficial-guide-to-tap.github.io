@@ -193,7 +193,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
 ## Validate
 
-### TAP GUI
+### Check TAP GUI Certificate
 ```bash
 DOMAIN="..."
 ```
@@ -203,7 +203,7 @@ openssl s_client -showcerts \
   -connect tap-gui.$DOMAIN:443 < /dev/null
 ```
 
-### Test Workload
+### Check Workload Certificate
 
 If you alread created a test workload, make sure to delete it first. It needs to be redeployed for the certificate to become effective.
 
