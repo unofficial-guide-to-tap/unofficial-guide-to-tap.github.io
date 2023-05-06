@@ -1,3 +1,3 @@
 # TAP for Application Teams
 
-THIS PAGE IS UNDER CONSTRUCTION
+![toc](_sidebar.md ':include')
