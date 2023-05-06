@@ -254,11 +254,6 @@ END: ## Install Cluster Essentials
 
     tap_gui:
       service_type: ClusterIP
-
-    # TODO: We should keep the default here for a minimum installation and make
-    # that change when configuring SSL/TLS depending on the method we use
-    cnrs:
-      domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
     ```
 
 1. Install the `tap` package with that configuration

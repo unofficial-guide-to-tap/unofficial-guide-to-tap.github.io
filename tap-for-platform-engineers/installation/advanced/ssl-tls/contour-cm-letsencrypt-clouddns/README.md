@@ -173,6 +173,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     cnrs:
       ingress_issuer: ""
       default_tls_secret: "tanzu-system-ingress/tap-cert"
+      domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
 
     tap_gui:
       tls:

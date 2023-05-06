@@ -47,6 +47,7 @@ For the rest of this guide, we will assume you have your certificate in a file c
     cnrs:
       ingress_issuer: ""
       default_tls_secret: "tanzu-system-ingress/tap-cert"
+      domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
 
     tap_gui:
       tls:
