@@ -11,3 +11,4 @@
         * [Provide Data Services](tap-for-platform-engineers/installation/advanced/services/README.md)
 * Operations
     * [Create A Developer Namespace](tap-for-platform-engineers/operations/dev-namespace.md)
+    * [Create A Developer Service Account](tap-for-platform-engineers/operations/dev-sa.md)
