@@ -13,8 +13,6 @@ GKE_CLUSTER_NAME="e.g. tap-cluster"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
 
-REGISTRY_HOST="e.g. gcr.io"
-
 TAP_DOMAIN="e.g. tap.example.com"
 ```
 
@@ -161,7 +159,7 @@ The binaries we need to have installed are shipping with the previously download
     ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${CLUSTER_ESSENTIALS_SHA} \
-      --to-repo ${REGISTRY_HOST}/${GCP_PROJECT_ID}/cluster-essentials-bundle \
+      --to-repo gcr.io/${GCP_PROJECT_ID}/cluster-essentials-bundle \
       --include-non-distributable-layers
     ```
 
@@ -171,7 +169,7 @@ The binaries we need to have installed are shipping with the previously download
     ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.5.0 \
-      --to-repo ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages \
+      --to-repo gcr.io/${GCP_PROJECT_ID}/tap-packages \
       --include-non-distributable-layers
     ```
 
@@ -192,8 +190,8 @@ END: ## Create A Package Repository Mirror
 2. Setup environment variables
 
     ```bash
-    export INSTALL_REGISTRY_HOSTNAME="$HOST"
-    export INSTALL_BUNDLE="${REGISTRY_HOST}/${GCP_PROJECT_ID}/cluster-essentials-bundle@sha256:$CLUSTER_ESSENTIALS_SHA"
+    export INSTALL_REGISTRY_HOSTNAME="gcr.io"
+    export INSTALL_BUNDLE="gcr.io/${GCP_PROJECT_ID}/cluster-essentials-bundle@sha256:$CLUSTER_ESSENTIALS_SHA"
     export INSTALL_REGISTRY_USERNAME="_json_key"
     export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json)"
     ```
@@ -230,7 +228,7 @@ END: ## Install Cluster Essentials
     ```bash
     tanzu package repository add tanzu-tap-repository \
       --namespace tap-install \
-      --url ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages:1.5.0
+      --url gcr.io/${GCP_PROJECT_ID}/tap-packages:1.5.0
     ```
 
 3. Create the TAP configuration file
@@ -245,7 +243,7 @@ END: ## Install Cluster Essentials
       ingress_domain: $TAP_DOMAIN
 
       image_registry:
-        project_path: "$REGISTRY_HOST/$GCP_PROJECT_ID"
+        project_path: "gcr.io/$GCP_PROJECT_ID"
         username: "_json_key"
         password: "$GOOGLE_ACCOUNT_KEY"
 
