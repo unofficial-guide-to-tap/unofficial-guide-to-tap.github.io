@@ -7,12 +7,9 @@ In this section, we set up some environment variables that will be referenced do
 ```bash
 GCP_PROJECT_ID="e.g. my-awesome-project-1234"
 GCP_REGION="e.g. europe-west1"
-
 GKE_CLUSTER_NAME="e.g. tap-cluster"
-
 TANZUNET_USERNAME="e.g. jdoe@vmware.com"
 TANZUNET_PASSWORD="- your password goes here -"
-
 TAP_DOMAIN="e.g. tap.example.com"
 ```
 
