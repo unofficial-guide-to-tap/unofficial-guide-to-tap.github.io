@@ -451,9 +451,19 @@ cd
 
 #### Deploy Tanzu Sync
 
-```
-./tanzu-sync/scripts/deploy.sh
-```
+1. Run the `deploy.sh` script
+
+    ```
+    ./tanzu-sync/scripts/deploy.sh
+    ```
+
+2. Watch progress of the `PackageInstall`s
+
+    > **Note:** It is normal to see some `PackageInstall`s fail in the early stages. Give it time to reconcile.
+
+    ```bash
+    tanzu -n tap-install package installed list
+    ```
 
 <!--
 END: ### Tanzu Sync

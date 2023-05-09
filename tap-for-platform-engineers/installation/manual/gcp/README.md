@@ -310,6 +310,8 @@ cd $HOME
 
 2. Watch progress of the `PackageInstall`s
 
+    > **Note:** It is normal to see some `PackageInstall`s fail in the early stages. Give it time to reconcile.
+
     ```bash
     tanzu -n tap-install package installed list
     ```
