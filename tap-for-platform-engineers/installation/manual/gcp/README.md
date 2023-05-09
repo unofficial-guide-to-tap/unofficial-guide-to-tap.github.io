@@ -32,20 +32,25 @@ Before you proceed, install the following components:
 In this section, we set up some environment variables that will be referenced down the line in the installation steps.
 
 ```bash
-GCP_PROJECT_ID="e.g. my-awesome-project-1234"
-GCP_REGION="e.g. europe-west1"
-GKE_CLUSTER_NAME="e.g. tap-cluster"
-TANZUNET_USERNAME="e.g. jdoe@vmware.com"
-TANZUNET_PASSWORD="- your password goes here -"
-TAP_DOMAIN="e.g. tap.example.com"
+GCP_PROJECT_ID="my-awesome-project-1234"
+GCP_REGION="europe-west1"
+GKE_CLUSTER_NAME="tap-cluster"
+TANZUNET_USERNAME="jdoe@vmware.com"
+TANZUNET_PASSWORD="************"
+TAP_DOMAIN="tap.example.com"
 ```
 
 You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `params.sh` and load it into your shell with `source params.sh`. The latter makes it easier to load them again after you have exited your shell.
 
-#### Connect To Kubernetes
+#### Login To GCP
 
 ```bash
 gcloud auth login
+```
+
+#### Connect To Kubernetes
+
+```bash
 gcloud container clusters get-credentials $GKE_CLUSTER_NAME \
   --region $GCP_REGION \
   --project $GCP_PROJECT_ID
@@ -64,7 +69,7 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 | Product | Release | Artifact | Notes |
 |---|---|---|---|
 | Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-linux-amd64-1.5.0.tgz | Contains [Carvel](https://carvel.dev/) tools |
-| Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-bundle-1.5.0.yml | 1.5 | Contains the SHA hash |
+| Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-bundle-1.5.0.yml | Contains the SHA hash |
 | VMware Tanzu Application Platform | 1.5.0 | tanzu-cli-tap-1.5.0/tanzu-framework-bundle-linux | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. The software bundle is part of the "Tanzu Application Platform" product in Tanzu Network |
 
 ## Installation
@@ -72,6 +77,12 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 The steps in this section are designed to be executed on the jump host.
 
 ### Install Tanzu CLI
+
+Start running the following commands from your home directory:
+
+```
+cd $HOME
+```
 
 1. Extract the downloaded archive
     ```bash
@@ -99,6 +110,12 @@ The steps in this section are designed to be executed on the jump host.
 
 ### Install Carvel Tools
 The binaries we need to have installed are shipping with the previously downloaded Cluster Essentials package.
+
+Start running the following commands from your home directory:
+
+```
+cd $HOME
+```
 
 1. Extract the downloaded archive
 
@@ -142,7 +159,6 @@ The binaries we need to have installed are shipping with the previously download
 
 2. Docker login to Google Container Registry (GCR)
     ```bash
-    gcloud auth login
     gcloud auth configure-docker
     ```
 
@@ -150,9 +166,15 @@ The binaries we need to have installed are shipping with the previously download
 
     The SHA hash used in this section is taken from the file `foo` that you downloaded before. In case you're using a different version, you may extract that hash from the yaml with the following command:
 
+    Start running the following commands from your home directory:
+
+    ```
+    cd $HOME
+    ```
+
     Get the SHA hash:
     ```bash
-    CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
+    CLUSTER_ESSENTIALS_SHA=$(cat $HOME/tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
     ```
 
     Run the mirror process:
@@ -165,7 +187,7 @@ The binaries we need to have installed are shipping with the previously download
 
     The whole process should not take more than a minute or two.
 
-3. Mirror TAP packages
+4. Mirror TAP packages
     ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.5.0 \
@@ -181,11 +203,17 @@ END: ## Create A Package Repository Mirror
 
 ### Install Cluster Essentials
 
-1. Get the SHA hash
+Start running the following commands from your home directory:
+
+```
+cd $HOME
+```
+
+1. Get the SHA hash if not already there
 
    ```bash
-    CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
-    ```
+   CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
+   ```
 
 2. Setup environment variables
 
@@ -207,6 +235,12 @@ END: ## Install Cluster Essentials
 -->
 
 ### Install The TAP Package
+
+Start running the following commands from your home directory:
+
+```
+cd $HOME
+```
 
 1. Create the installation `Namespace`
     ```bash
@@ -278,48 +312,6 @@ END: ## Install Cluster Essentials
 
     ```bash
     tanzu -n tap-install package installed list
-    ```
-
-    It will take a good while depending on your environment before all `Packages` have been successfuly reconciled. Expected output:
-    ```
-    NAME                      PACKAGE-NAME                                 PACKAGE-VERSION   STATUS
-    accelerator               accelerator.apps.tanzu.vmware.com            1.5.1             Reconcile succeeded
-    api-auto-registration     apis.apps.tanzu.vmware.com                   0.3.0             Reconcile succeeded
-    api-portal                api-portal.tanzu.vmware.com                  1.3.0             Reconcile succeeded
-    appliveview               backend.appliveview.tanzu.vmware.com         1.5.1             Reconcile succeeded
-    appliveview-apiserver     apiserver.appliveview.tanzu.vmware.com       1.5.1             Reconcile succeeded
-    appliveview-connector     connector.appliveview.tanzu.vmware.com       1.5.1             Reconcile succeeded
-    appliveview-conventions   conventions.appliveview.tanzu.vmware.com     1.5.1             Reconcile succeeded
-    appsso                    sso.apps.tanzu.vmware.com                    3.1.0             Reconcile succeeded
-    bitnami-services          bitnami.services.tanzu.vmware.com            0.1.0             Reconcile succeeded
-    buildservice              buildservice.tanzu.vmware.com                1.10.8            Reconcile succeeded
-    cartographer              cartographer.tanzu.vmware.com                0.7.1+tap.1       Reconcile succeeded
-    cert-manager              cert-manager.tanzu.vmware.com                2.3.0             Reconcile succeeded
-    cnrs                      cnrs.tanzu.vmware.com                        2.2.0             Reconcile succeeded
-    contour                   contour.tanzu.vmware.com                     1.22.5+tap.1.5.0  Reconcile succeeded
-    crossplane                crossplane.tanzu.vmware.com                  0.1.1             Reconcile succeeded
-    developer-conventions     developer-conventions.tanzu.vmware.com       0.10.0            Reconcile succeeded
-    eventing                  eventing.tanzu.vmware.com                    2.2.1             Reconcile succeeded
-    fluxcd-source-controller  fluxcd.source.controller.tanzu.vmware.com    0.27.0+tap.10     Reconcile succeeded
-    grype                     grype.scanning.apps.tanzu.vmware.com         1.5.0             Reconcile succeeded
-    learningcenter            learningcenter.tanzu.vmware.com              0.2.7             Reconcile succeeded
-    learningcenter-workshops  workshops.learningcenter.tanzu.vmware.com    0.2.6             Reconcile succeeded
-    metadata-store            metadata-store.apps.tanzu.vmware.com         1.5.0             Reconcile succeeded
-    namespace-provisioner     namespace-provisioner.apps.tanzu.vmware.com  0.3.1             Reconcile succeeded
-    ootb-delivery-basic       ootb-delivery-basic.tanzu.vmware.com         0.12.5            Reconcile succeeded
-    ootb-supply-chain-basic   ootb-supply-chain-basic.tanzu.vmware.com     0.12.5            Reconcile succeeded
-    ootb-templates            ootb-templates.tanzu.vmware.com              0.12.5            Reconcile succeeded
-    policy-controller         policy.apps.tanzu.vmware.com                 1.4.0             Reconcile succeeded
-    scanning                  scanning.apps.tanzu.vmware.com               1.5.2             Reconcile succeeded
-    service-bindings          service-bindings.labs.vmware.com             0.9.1             Reconcile succeeded
-    services-toolkit          services-toolkit.tanzu.vmware.com            0.10.1            Reconcile succeeded
-    source-controller         controller.source.apps.tanzu.vmware.com      0.7.0             Reconcile succeeded
-    spring-boot-conventions   spring-boot-conventions.tanzu.vmware.com     1.5.1             Reconcile succeeded
-    tap                       tap.tanzu.vmware.com                         1.5.0             Reconcile succeeded
-    tap-auth                  tap-auth.tanzu.vmware.com                    1.1.0             Reconcile succeeded
-    tap-gui                   tap-gui.tanzu.vmware.com                     1.5.1             Reconcile succeeded
-    tap-telemetry             tap-telemetry.tanzu.vmware.com               0.5.0-build.3     Reconcile succeeded
-    tekton-pipelines          tekton.tanzu.vmware.com                      0.41.0+tap.8      Reconcile succeeded
     ```
 
 <!--
