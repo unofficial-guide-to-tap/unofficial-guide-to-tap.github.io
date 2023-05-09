@@ -60,7 +60,7 @@ Create a copy of the Service Account key at `$HOME/key.json`.
 vim $HOME/key.json
 ```
 
-### Download Software
+#### Download Software
 Download the following artifacts from [Tanzu Network](https://network.tanzu.vmware.com/) to your jump host.
 
 | Product | Release | Artifact | Notes |
@@ -70,6 +70,8 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 | VMware Tanzu Application Platform | 1.5.0 | tanzu-cli-tap-1.5.0/tanzu-framework-bundle-linux | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. The software bundle is part of the "Tanzu Application Platform" product in Tanzu Network |
 
 ## Installation
+
+The steps in this section are designed to be executed on the jump host.
 
 ### Install Tanzu CLI
 
