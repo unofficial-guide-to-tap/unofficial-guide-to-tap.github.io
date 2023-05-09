@@ -1,5 +1,27 @@
 # Installation On Google Cloud Platform
 
+## Environment Variables
+
+In this section, we set up some environment variables that will be referenced down the line in the installation steps.
+
+```bash
+GCP_PROJECT_ID="..."
+GCP_REGION="e.g. europe-west1"
+
+GKE_CLUSTER_NAME="e.g. tap-cluster"
+
+TANZUNET_USERNAME="..."
+TANZUNET_PASSWORD="..."
+
+REGISTRY_HOST="e.g. gcr.io"
+
+CLUSTER_ESSENTIALS_SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
+
+TAP_VERSION="1.5.0"
+TAP_DOMAIN="e.g. tap.example.com"
+```
+
+
 ## Prerequisites
 
 ### GCP Preparations
@@ -31,9 +53,9 @@ Before you proceed, install the following components:
 
 ```bash
 gcloud auth login
-gcloud container clusters get-credentials CLUSTER_NAME \
-  --region REGION \
-  --project PROJECT_ID
+gcloud container clusters get-credentials $GKE_CLUSTER_NAME \
+  --region $GCP_REGION \
+  --project $GCP_PROJECT_ID
 ```
 
 #### Service Account Key
@@ -111,9 +133,6 @@ The binaries we need to have installed are shipping with the previously download
 
 1. Docker login to Tanzu Network
     ```bash
-    TANZUNET_USERNAME="..."
-    TANZUNET_PASSWORD="..."
-
     echo "$TANZUNET_PASSWORD" | \
     docker login registry.tanzu.vmware.com \
       -u $TANZUNET_USERNAME \
@@ -128,7 +147,7 @@ The binaries we need to have installed are shipping with the previously download
 
 2. Docker login to Google Container Registry (GCR)
     ```bash
-    # gcloud auth login # If you haven't already done so
+    gcloud auth login
     gcloud auth configure-docker
     ```
 
@@ -141,13 +160,9 @@ The binaries we need to have installed are shipping with the previously download
     ```
 
     ```bash
-    SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
-    HOST="gcr.io"
-    REPO="YOUR_PROJECT_ID"
-
     imgpkg copy \
-      -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${SHA} \
-      --to-repo ${HOST}/${REPO}/cluster-essentials-bundle \
+      -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${CLUSTER_ESSENTIALS_SHA} \
+      --to-repo ${REGISTRY_HOST}/${GCP_PROJECT_ID}/cluster-essentials-bundle \
       --include-non-distributable-layers
     ```
 
@@ -155,13 +170,9 @@ The binaries we need to have installed are shipping with the previously download
 
 3. Mirror TAP packages
     ```bash
-    VERSION="1.5.0"
-    HOST="gcr.io"
-    REPO="YOUR_PROJECT_ID"
-
     imgpkg copy \
-      -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${VERSION} \
-      --to-repo ${HOST}/${REPO}/tap-packages \
+      -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${TAP_VERSION} \
+      --to-repo ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages \
       --include-non-distributable-layers
     ```
 
@@ -174,16 +185,12 @@ END: ## Create A Package Repository Mirror
 ### Install Cluster Essentials
 
 1. Setup environment variables
-    ```bash
-    GOOGLE_APPLICATION_CREDENTIALS="$HOME/key.json"
-    SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
-    HOST="gcr.io"
-    REPO="YOUR_PROJECT_ID"
 
+    ```bash
     export INSTALL_REGISTRY_HOSTNAME="$HOST"
-    export INSTALL_BUNDLE="$HOST/$REPO/cluster-essentials-bundle@sha256:$SHA"
+    export INSTALL_BUNDLE="${REGISTRY_HOST}/${GCP_PROJECT_ID}/cluster-essentials-bundle@sha256:$CLUSTER_ESSENTIALS_SHA"
     export INSTALL_REGISTRY_USERNAME="_json_key"
-    export INSTALL_REGISTRY_PASSWORD="$(cat $GOOGLE_APPLICATION_CREDENTIALS)"
+    export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json)"
     ```
 
 2. Run the installation script
@@ -216,29 +223,26 @@ END: ## Install Cluster Essentials
 2. Create `PackageRepository`
 
     ```bash
-    VERSION="1.5.0"
-    HOST="gcr.io"
-    REPO="..."
-
     tanzu package repository add tanzu-tap-repository \
       --namespace tap-install \
-      --url ${HOST}/${REPO}/tap-packages:${VERSION}
+      --url ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages:${TAP_VERSION}
     ```
 
 3. Create the TAP configuration file
 
-    ```bash
-    vim values.yaml
     ```
-    ```yaml
+    GOOGLE_ACCOUNT_KEY="$(cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//')"
+    ```
+
+    ```bash
+    cat <<EOF > values.yaml
     shared:
-      ingress_domain: YOUR_DOMAIN
+      ingress_domain: $TAP_DOMAIN
 
       image_registry:
-        project_path: "REGISTRY_HOST/REGISTRY_REPO"
+        project_path: "$REGISTRY_HOST/$GCP_PROJECT_ID"
         username: "_json_key"
-        password: |
-          SERVICE_ACCOUNT_KEY_JSON
+        password: "$GOOGLE_ACCOUNT_KEY"
 
     ceip_policy_disclosed: true
 
@@ -253,6 +257,7 @@ END: ## Install Cluster Essentials
 
     tap_gui:
       service_type: ClusterIP
+    EOF
     ```
 
 1. Install the `tap` package with that configuration
@@ -260,7 +265,7 @@ END: ## Install Cluster Essentials
     ```bash
     tanzu package install tap \
       -p tap.tanzu.vmware.com \
-      -v "1.5.0" \
+      -v "$TAP_VERSION" \
       --values-file values.yaml \
       --wait="false" \
       -n "tap-install"
@@ -327,8 +332,8 @@ END: ## Install TAP
     ```
 
 2. Create the following A records pointing to that address
-   - `*.DOMAIN` 
-   - `*.cnrs.DOMAIN`
+   - `*.$TAP_DOMAIN` 
+   - `*.cnrs.$TAP_DOMAIN`
 
 The [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project mentioned above allows you to configure the IP address as a variable so you can manage these entries via Terraform.
 
@@ -341,7 +346,7 @@ END: ## Create DNS Records
 ### Access TAP GUI
 
 1. Open your browser (ideally, use Google Chrome as it allows you to accept the self-signed certificate)
-2. Navigate to [https://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
+2. Navigate to [https://tap-gui.$TAP_DOMAIN](http://tap-gui.$TAP_DOMAIN)
 3. In the "Guest" panel, click "ENTER" to proceed as a guest user
 
 ### Deploy A Test Workload
