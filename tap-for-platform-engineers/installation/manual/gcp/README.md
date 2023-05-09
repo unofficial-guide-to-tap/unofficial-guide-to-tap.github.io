@@ -1,19 +1,5 @@
 # Installation On Google Cloud Platform
 
-## Prarameters
-
-In this section, we set up some environment variables that will be referenced down the line in the installation steps.
-
-```bash
-GCP_PROJECT_ID="e.g. my-awesome-project-1234"
-GCP_REGION="e.g. europe-west1"
-GKE_CLUSTER_NAME="e.g. tap-cluster"
-TANZUNET_USERNAME="e.g. jdoe@vmware.com"
-TANZUNET_PASSWORD="- your password goes here -"
-TAP_DOMAIN="e.g. tap.example.com"
-```
-
-
 ## Prerequisites
 
 ### GCP Preparations
@@ -40,6 +26,21 @@ Before you proceed, install the following components:
 | Docker | >= 20.10 | `docker version` |
 | Kubectl | >= 1.25  | `kubectl version --client` |
 | gcloud | latest  | `gcloud version` |
+
+#### Setup Parameters
+
+In this section, we set up some environment variables that will be referenced down the line in the installation steps.
+
+```bash
+GCP_PROJECT_ID="e.g. my-awesome-project-1234"
+GCP_REGION="e.g. europe-west1"
+GKE_CLUSTER_NAME="e.g. tap-cluster"
+TANZUNET_USERNAME="e.g. jdoe@vmware.com"
+TANZUNET_PASSWORD="- your password goes here -"
+TAP_DOMAIN="e.g. tap.example.com"
+```
+
+You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `params.sh` and load it into your shell with `source params.sh`. The latter makes it easier to load them again after you have exited your shell.
 
 #### Connect To Kubernetes
 
