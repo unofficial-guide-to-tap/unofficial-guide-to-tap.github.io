@@ -15,9 +15,6 @@ TANZUNET_PASSWORD="..."
 
 REGISTRY_HOST="e.g. gcr.io"
 
-CLUSTER_ESSENTIALS_SHA="79abddbc3b49b44fc368fede0dab93c266ff7c1fe305e2d555ed52d00361b446"
-
-TAP_VERSION="1.5.0"
 TAP_DOMAIN="e.g. tap.example.com"
 ```
 
@@ -155,10 +152,12 @@ The binaries we need to have installed are shipping with the previously download
 
     The SHA hash used in this section is taken from the file `foo` that you downloaded before. In case you're using a different version, you may extract that hash from the yaml with the following command:
 
+    Get the SHA hash:
     ```bash
-    cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2
+    CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
     ```
 
+    Run the mirror process:
     ```bash
     imgpkg copy \
       -b registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:${CLUSTER_ESSENTIALS_SHA} \
@@ -171,7 +170,7 @@ The binaries we need to have installed are shipping with the previously download
 3. Mirror TAP packages
     ```bash
     imgpkg copy \
-      -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:${TAP_VERSION} \
+      -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.5.0 \
       --to-repo ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages \
       --include-non-distributable-layers
     ```
@@ -184,7 +183,13 @@ END: ## Create A Package Repository Mirror
 
 ### Install Cluster Essentials
 
-1. Setup environment variables
+1. Get the SHA hash
+
+   ```bash
+    CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
+    ```
+
+2. Setup environment variables
 
     ```bash
     export INSTALL_REGISTRY_HOSTNAME="$HOST"
@@ -193,7 +198,7 @@ END: ## Create A Package Repository Mirror
     export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json)"
     ```
 
-2. Run the installation script
+3. Run the installation script
     ```bash
     cd cluster-essentials
     ./install.sh --yes
@@ -225,7 +230,7 @@ END: ## Install Cluster Essentials
     ```bash
     tanzu package repository add tanzu-tap-repository \
       --namespace tap-install \
-      --url ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages:${TAP_VERSION}
+      --url ${REGISTRY_HOST}/${GCP_PROJECT_ID}/tap-packages:1.5.0
     ```
 
 3. Create the TAP configuration file
@@ -265,7 +270,7 @@ END: ## Install Cluster Essentials
     ```bash
     tanzu package install tap \
       -p tap.tanzu.vmware.com \
-      -v "$TAP_VERSION" \
+      -v "1.5.0" \
       --values-file values.yaml \
       --wait="false" \
       -n "tap-install"
