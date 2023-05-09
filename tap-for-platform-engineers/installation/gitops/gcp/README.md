@@ -433,14 +433,6 @@ END: ### Setup The Git Repository
 -->
 
 
----
----
-
-# -HERE-
-
----
----
-
 ### Create DNS Records
 
 1. Get the public IP of your Contour ingress (installed with TAP)
