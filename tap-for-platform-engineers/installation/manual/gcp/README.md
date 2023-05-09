@@ -1,6 +1,6 @@
 # Installation On Google Cloud Platform
 
-## Environment Variables
+## Prarameters
 
 In this section, we set up some environment variables that will be referenced down the line in the installation steps.
 
