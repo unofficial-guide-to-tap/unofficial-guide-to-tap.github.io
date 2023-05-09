@@ -1,3 +1,3 @@
 # TAP for Application Teams
 
-![toc](_sidebar.md ':include')
+![about](../about.md ':include')
