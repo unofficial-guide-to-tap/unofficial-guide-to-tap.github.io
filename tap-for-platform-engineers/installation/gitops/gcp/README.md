@@ -30,10 +30,15 @@ Before you proceed, install the following components:
 #### Connect To Kubernetes
 
 ```bash
+CLUSTER_NAME="..."
+REGION="..."
+PROJECT_ID="..."
+```
+```bash
 gcloud auth login
-gcloud container clusters get-credentials CLUSTER_NAME \
-  --region REGION \
-  --project PROJECT_ID
+gcloud container clusters get-credentials $CLUSTER_NAME \
+  --region $REGION \
+  --project $PROJECT_ID
 ```
 
 #### Service Account Key
@@ -44,37 +49,41 @@ vim $HOME/key.json
 ```
 
 ### Download Software
-Download the following artifacts from [Tanzu Network](https://network.tanzu.vmware.com/) to your jump host.
+Download the following artifacts from [Tanzu Network](https://network.tanzu.vmware.com/) into the home directory of on your jump host.
 
 | Product | Release | Artifact | Notes |
 |---|---|---|---|
 | Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-linux-amd64-1.5.0.tgz | Contains [Carvel](https://carvel.dev/) tools |
 | Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-bundle-1.5.0.yml | 1.5 | Contains the SHA hash |
 | VMware Tanzu Application Platform | 1.5.0 | tanzu-cli-tap-1.5.0/tanzu-framework-bundle-linux | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. The software bundle is part of the "Tanzu Application Platform" product in Tanzu Network |
+| VMware Tanzu Application Platform | 1.5.0 | tanzu-gitops-ri-0.1.0.tgz | Initialization content for the gitops repository. |
 
 ## Installation
 
 ### Install Tanzu CLI
 
-1. Extract the downloaded archive
+1. Navigate to the home directory
+
+    ```bash
+    cd
+    ```
+
+2. Extract the downloaded archive
     ```bash
     mkdir tanzu-framework
     tar xvf tanzu-framework-linux-amd64-v0.28.1.1.tar -C tanzu-framework
-    cd tanzu-framework
     ```
 
-2. Install the executable
+3. Install the executable and shipped plugins
     ```bash
-    sudo install cli/core/v0.28.1/tanzu-core-linux_amd64 /usr/local/bin/tanzu
-    ```
+    pushd tanzu-framework
+      sudo install cli/core/v0.28.1/tanzu-core-linux_amd64 /usr/local/bin/tanzu
 
-3. Install the shipped plugins
-    ```bash
-    export TANZU_CLI_NO_INIT=true
-    tanzu plugin install --local cli all
+      export TANZU_CLI_NO_INIT=true
+      tanzu plugin install --local cli all
+    popd
     ```
-
-4. Validate the installation
+4. Validate Tanzu CLI
     ```bash
     tanzu version
     tanzu plugin list
@@ -83,23 +92,30 @@ Download the following artifacts from [Tanzu Network](https://network.tanzu.vmwa
 ### Install Carvel Tools
 The binaries we need to have installed are shipping with the previously downloaded Cluster Essentials package.
 
-1. Extract the downloaded archive
+1. Navigate to the home directory
+
+    ```bash
+    cd
+    ```
+
+2. Extract the downloaded archive
 
     ```bash
     mkdir cluster-essentials
     tar xvf tanzu-cluster-essentials-linux-amd64-1.5.0.tgz -C cluster-essentials
-    cd cluster-essentials
     ```
 
-2. Install the executables
+3. Install the executables
     ```bash
-    sudo install ./imgpkg /usr/local/bin/imgpkg
-    sudo install ./kapp /usr/local/bin/kapp
-    sudo install ./kbld /usr/local/bin/kbld
-    sudo install ./ytt /usr/local/bin/ytt
+    pushd cluster-essentials
+      sudo install ./imgpkg /usr/local/bin/imgpkg
+      sudo install ./kapp /usr/local/bin/kapp
+      sudo install ./kbld /usr/local/bin/kbld
+      sudo install ./ytt /usr/local/bin/ytt
+    popd
     ```
 
-3. Validate the installation
+4. Validate Cavel tools
     ```bash
     imgpkg --version
     kapp --version
@@ -112,8 +128,9 @@ The binaries we need to have installed are shipping with the previously download
 1. Docker login to Tanzu Network
     ```bash
     TANZUNET_USERNAME="..."
-    TANZUNET_PASSWORD="..."
-
+    TANZUNET_PASSWORD="..." 
+    ```
+    ```bash
     echo "$TANZUNET_PASSWORD" | \
     docker login registry.tanzu.vmware.com \
       -u $TANZUNET_USERNAME \
@@ -128,11 +145,16 @@ The binaries we need to have installed are shipping with the previously download
 
 2. Docker login to Google Container Registry (GCR)
     ```bash
-    # gcloud auth login # If you haven't already done so
+    gcloud auth login
     gcloud auth configure-docker
     ```
 
 3. Mirror cluster essentials packages
+
+    Make sure you are in your home directory
+    ```
+    cd
+    ```
 
     The SHA hash used in this section is taken from the file `foo` that you downloaded before. In case you're using a different version, you may extract that hash from the yaml with the following command:
 
@@ -188,8 +210,9 @@ END: ## Create A Package Repository Mirror
 
 2. Run the installation script
     ```bash
-    cd cluster-essentials
-    ./install.sh --yes
+    pushd cluster-essentials
+      ./install.sh --yes
+    popd
     ```
 
 <!--
@@ -198,14 +221,20 @@ END: ## Install Cluster Essentials
 
 ### Install SOPS CLI
 
-1. Download and install the `sops` binary
+1. Navigate to your home directory
+
+    ```
+    cd
+    ```
+
+2. Download and install the `sops` binary
 
     ```bash
     wget https://github.com/mozilla/sops/releases/download/v3.7.3/sops-v3.7.3.linux.amd64
     sudo install sops-v3.7.3.linux.amd64 /usr/local/bin/sops
     ```
 
-2. Verify `sops` installation and version
+3. Verify `sops` installation and version
     ```
     sops --version
     ```
@@ -247,28 +276,27 @@ END: ### Install Age CLI
 
     Go to Github, Gitlab, Bitbucket or whatever service you use to host Git repositories and create a new empty repository. The following instructions are designed for **GitHub** repositories
 
-2. Initialize the repository
+2. Navigate to your home directory
 
-    Create a folder for the repository
+    ```
+    cd
+    ```
+
+3. Initialize the repository
+
+    Create a folder for the repository and unpack the gitops reference implementation:
+
     ```
     mkdir tap-gitops
-    ```
-
-    Unpack the "Tanzu GitOps Reference Implementation" archive into the folder
-
-    ```
     tar xvf tanzu-gitops-ri-0.1.0.tgz -C tap-gitops
+    cd tap-gitops
     ```
 
-    Create cluster config
+    Create cluster config and push the changes
 
     ```
-    pushd tap-gitops
     ./setup-repo.sh tap-cluster sops
-    ````
-
-    Push changes
-
+    ```
     ```
     git init
     git add .
@@ -278,37 +306,15 @@ END: ### Install Age CLI
     git push -u origin main
     ```
 
-    Running `tree` in the `tap-gitops` folder should reveal a structure like this:
-
-    ```
-    .
-    ├── README.md
-    ├── clusters
-    │   └── tap-cluster
-    │       ├── cluster-config
-    │       │   ├── config
-    │       │   │   └── tap-install
-    │       │   └── values
-    │       ├── docs
-    │       │   └── README.md
-    │       └── tanzu-sync
-    │           ├── app
-    │           │   ├── config
-    │           │   └── values
-    │           ├── bootstrap
-    │           │   ├── noop
-    │           │   └── readme
-    │           └── scripts
-    │               ├── configure-secrets.sh
-    │               ├── configure.sh
-    │               ├── deploy.sh
-    │               └── sensitive-values.sh
-    └── setup-repo.sh
-    ```
-
 #### Create Encrypted File For Sensitive Values
 
-1. Create a temporary directory to setup the encryption keys
+1. Navigate to your home directory
+
+    ```
+    cd
+    ```
+
+2. Create a temporary directory to setup the encryption keys
 
     ```
     mkdir -p tmp-enc
@@ -325,14 +331,16 @@ END: ### Install Age CLI
 3. Create and encrypt the yaml file for senstive values
 
     ```
+    GOOGLE_ACCOUNT_KEY="$(cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//')"
+    ```
+    ```
     cat <<EOF > tap-sensitive-values.yaml
     ---
     tap_install:
       sensitive_values:
         shared:
           image_registry:
-            password: |
-              SERVICE_ACCOUNT_KEY_JSON
+            password: "$GOOGLE_ACCOUNT_KEY"
     EOF
 
     export SOPS_AGE_RECIPIENTS=$(cat key.txt | grep "# public key: " | sed 's/# public key: //')
@@ -342,7 +350,13 @@ END: ### Install Age CLI
 4. Move the encrypted file into the `tap-gitops` repository
 
     ```
-    mv tap-sensitive-values.sops.yaml ~/tap-gitrepo/clusters/<CLUSTER-NAME>/cluster-config/values/
+    CLUSTER_NAME="tap-cluster"
+    CLUSTER_VALUES_DIR="$HOME/tap-gitrepo/clusters/$CLUSTER_NAME/cluster-config/values"
+
+    mkdir -p $CLUSTER_VALUES_DIR
+    ```
+    ```
+    mv tap-sensitive-values.sops.yaml $CLUSTER_VALUES_DIR/
     ```
 
 5. Save `key.txt` and cleanup
@@ -353,15 +367,19 @@ END: ### Install Age CLI
     rm -fR tmp-enc
     ```
 
-If you need to change your sensitive values later on, simple make sure to export `SOPS_AGE_RECIPIENTS` pointing your your `key.txt` and run `sops tap-sensitive-values.sops.yaml`. This will open an editor with the unencrypted contents. Make your changes, then save the file.
+If you need to change your sensitive values later on, simple make sure to export `SOPS_AGE_RECIPIENTS` pointing your your `key.txt` (`export SOPS_AGE_RECIPIENTS=$HOME/key.txt`) and run `sops tap-sensitive-values.sops.yaml`. This will open an editor with the unencrypted contents. Make your changes, then save the file.
 
 #### Create File For Non-Sensitive Values
 
+1. Navigate to your home directory
 ```
-cd tap-gitops/clusters/tap-cluster/cluster-config/values
+cd
 ```
+
+2. Create the file
+
 ```
-cat <<EOF > tap-non-sensitive-values.yaml
+cat <<EOF > tap-gitops/clusters/tap-cluster/cluster-config/values/tap-non-sensitive-values.yaml
 ---
 tap_install:
   values:
@@ -387,49 +405,59 @@ tap_install:
 EOF
 ```
 
-### Tanzu Sync
-
-#### Generate The Tanzu Sync Configuration
-
-1. Set up environment variables
-
-```
-export INSTALL_REGISTRY_HOSTNAME="gcr.io"
-export INSTALL_REGISTRY_USERNAME="_json_key"
-export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//')"
-export GIT_SSH_PRIVATE_KEY="$(cat $HOME/.ssh/id_rsa)"
-export GIT_KNOWN_HOSTS="$(ssh-keyscan github.com)"
-export SOPS_AGE_KEY="$(cat $HOME/key.txt)"
-export TAP_PKGR_REPO="gcr.io/cso-pcfs-emea-mewald/tap-packages"
-```
-
-2. Run `tanz-sync`'s `configure.sh` script
-
-```
-cd tap-gitops/clusters/tap-cluster
-./tanzu-sync/scripts/configure.sh
-```
-
-3. Push changes
-
-```
-git add cluster-config/ tanzu-sync/
-git commit -m "Configure install of TAP 1.5.0"
-git push
-```
-
-#### Deploy Tanzu Sync
-
-```
-cd tap-gitops/clusters/tap-cluster
-./tanzu-sync/scripts/deploy.sh
-```
-
-
 <!--
 END: ### Setup The Git Repository
 -->
 
+### Tanzu Sync
+
+#### Generate The Tanzu Sync Configuration
+
+1. Navigate to your home directory
+
+```
+cd
+```
+
+1. Set up environment variables
+
+    ```
+    export INSTALL_REGISTRY_HOSTNAME="gcr.io"
+    export INSTALL_REGISTRY_USERNAME="_json_key"
+    export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//')"
+    export GIT_SSH_PRIVATE_KEY="$(cat $HOME/.ssh/id_rsa)"
+    export GIT_KNOWN_HOSTS="$(ssh-keyscan github.com)"
+    export SOPS_AGE_KEY="$(cat $HOME/key.txt)"
+    export TAP_PKGR_REPO="gcr.io/cso-pcfs-emea-mewald/tap-packages"
+    ```
+
+    > Using GCP and GCR as a registry is a bit tricky here which is why the command to setup `INSTALL_REGISTRY_PASSWORD` is a bit more complex. The `key.json` contains JSON content which get embedded into another JSON in the commands that follow in the next steps. Therefore, we need to make sure the contents of `key.json` are properly escaped.
+
+
+2. Run `tanz-sync`'s `configure.sh` script
+
+    ```
+    cd tap-gitops/clusters/tap-cluster
+    ./tanzu-sync/scripts/configure.sh
+    ```
+
+3. Push changes
+
+    ```
+    git add cluster-config/ tanzu-sync/
+    git commit -m "Configure install of TAP 1.5.0"
+    git push
+    ```
+
+#### Deploy Tanzu Sync
+
+```
+./tanzu-sync/scripts/deploy.sh
+```
+
+<!--
+END: ### Tanzu Sync
+-->
 
 ### Create DNS Records
 
@@ -446,14 +474,14 @@ END: ### Setup The Git Repository
 The [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project mentioned above allows you to configure the IP address as a variable so you can manage these entries via Terraform.
 
 <!--
-END: ## Create DNS Records
+END: ### Create DNS Records
 -->
 
 <!--
-END: # Installation
+END: ## Installation
 -->
 
-## Validation <!-- omit from toc -->
+## Validation
 
 ### Access TAP GUI
 
