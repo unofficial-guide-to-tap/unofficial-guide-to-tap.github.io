@@ -1,48 +1,31 @@
 # Tanzu SQL for Kubernetes
 
-- [Tanzu SQL for Kubernetes](#tanzu-sql-for-kubernetes)
-  - [Installation](#installation)
-    - [Relocate Images](#relocate-images)
-    - [Tanzu Postgres](#tanzu-postgres)
-      - [Installation](#installation-1)
-      - [Validation](#validation)
-    - [Tanzu MySQL](#tanzu-mysql)
-      - [Installation](#installation-2)
-      - [Validation](#validation-1)
-  - [Usage Examples](#usage-examples)
-    - [Postgres](#postgres)
-    - [MySQL](#mysql)
----
+## Parameters
 
-Tanzu SQL for Kubernetes provides Kubernetes operators for Postgres and MySQL. In this guide, you will install both operators and create an instance of each service.
-
-## Installation
-
-Make sure set up the folloring variables before proceeding with this guide:
+In this section, we set up some environment variables that will be referenced down the line in the installation steps.
 
 ```bash
-TDS_VERSION="1.7.0"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
-
-POSTGRES_VERSION="2.0.1"
-MYSQL_VERSION="1.7.0"
 
 INSTALL_REGISTRY_HOSTNAME="..."
 INSTALL_REGISTRY_REPO="..."
 INSTALL_REGISTRY_USERNAME="..."
 INSTALL_REGISTRY_PASSWORD="..."
 ```
-- **TDS_VERSION**: The version of Tanzu Data Services as available in Tanzu Network
+
+You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `sql-params.sh` and load it into your shell with `source sql-params.sh`. The latter makes it easier to load them again after you have exited your shell.
+
 - **TANZUNET_USERNAME**: The username to authenticate with Tanzu Network. 
 - **TANZUNET_PASSWORD**: The password to authenticate with Tanzu Network. 
-- **POSTGRES_VERSION**: The version of the Postgres operator to install
-- **MYSQL_VERSION**: The version of the MySQL operator to install
 - **INSTALL_REGISTRY_HOSTNAME**: The hostname of your registry you use as a package mirror of Tanzu Network
 - **INSTALL_REGISTRY_REPO**: The repository in that registry.
 - **INSTALL_REGISTRY_USERNAME**: The username to authenticate with the registry. 
 - **INSTALL_REGISTRY_PASSWORD**: The password to authenticate with the registry. 
 
+> If you're using GCR on GCP, you will need to provide a service account key JSON as `INSTALL_REGISTRY_PASSWORD`. A quick way to convert the JSON to a string is `cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//'`.
+
+## Installation
 
 ### Relocate Images
 
@@ -68,7 +51,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```bash
     imgpkg copy \
-      -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:$TDS_VERSION \
+      -b registry.tanzu.vmware.com/packages-for-vmware-tanzu-data-services/tds-packages:1.7.0 \
       --to-repo $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages
     ```
 
@@ -96,7 +79,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```bash
     tanzu package repository add tanzu-data-services-repository \
-      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:$TDS_VERSION \
+      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:1.7.0 \
       --namespace postgres-tanzu-operator
     ```
 
@@ -110,7 +93,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```bash
     tanzu package install postgres-operator \
       --package postgres-operator.sql.tanzu.vmware.com \
-      --version $POSTGRES_VERSION \
+      --version 2.0.1 \
       --namespace postgres-tanzu-operator \
       --values-file postgres-operator.yaml
     ```
@@ -173,7 +156,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```bash
     tanzu package repository add tanzu-data-services-repository \
-      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:$TDS_VERSION \
+      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/tds-packages:1.7.0 \
       --namespace mysql-tanzu-operator
     ```
 
@@ -187,7 +170,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```
     tanzu package install mysql-operator \
       --package mysql-operator.with.sql.tanzu.vmware.com \
-      --version $MYSQL_VERSION \
+      --version 1.7.0 \
       --namespace mysql-tanzu-operator \
       --values-file mysql-operator.yaml
     ```
@@ -281,7 +264,7 @@ cat <<EOF | kubectl -n service-instances apply -f -
 apiVersion: with.sql.tanzu.vmware.com/v1
 kind: MySQL
 metadata:
-  name: mysql-sample
+  name: mysql-1
 spec:
   storageSize: 1G
   highAvailability:
@@ -305,6 +288,3 @@ NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S) 
 service/mysql-sample           ClusterIP   10.3.248.124   <none>        3306/TCP,33060/TCP   65s
 service/mysql-sample-members   ClusterIP   None           <none>        3306/TCP,33060/TCP   65s
 ```
-
----
-Next: [Services Toolkit](./services-toolkit.md)

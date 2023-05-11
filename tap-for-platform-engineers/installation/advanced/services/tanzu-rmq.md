@@ -1,9 +1,10 @@
 # Tanzu RabbitMQ for Kubernetes
 
-Make sure set up the folloring variables before proceeding with this guide:
+## Parameters
+
+In this section, we set up some environment variables that will be referenced down the line in the installation steps.
 
 ```bash
-RABBITMQ_VERSION="1.4.0"
 TANZUNET_USERNAME="..."
 TANZUNET_PASSWORD="..."
 
@@ -12,7 +13,9 @@ INSTALL_REGISTRY_REPO="..."
 INSTALL_REGISTRY_USERNAME="..."
 INSTALL_REGISTRY_PASSWORD="..."
 ```
-- **RABBITMQ_VERSION**: The version of Tanzu RabbitMQ as available in Tanzu Network
+
+You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `sql-params.sh` and load it into your shell with `source sql-params.sh`. The latter makes it easier to load them again after you have exited your shell.
+
 - **TANZUNET_USERNAME**: The username to authenticate with Tanzu Network. 
 - **TANZUNET_PASSWORD**: The password to authenticate with Tanzu Network. 
 - **INSTALL_REGISTRY_HOSTNAME**: The hostname of your registry you use as a package mirror of Tanzu Network
@@ -42,7 +45,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```bash
     imgpkg copy \
-      -b registry.tanzu.vmware.com/p-rabbitmq-for-kubernetes/tanzu-rabbitmq-package-repo:$RABBITMQ_VERSION \
+      -b registry.tanzu.vmware.com/p-rabbitmq-for-kubernetes/tanzu-rabbitmq-package-repo:1.4.0 \
       --to-repo $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages
     ```
 
@@ -67,7 +70,7 @@ INSTALL_REGISTRY_PASSWORD="..."
 
     ```bash
     tanzu package repository add tanzu-rabbitmq-repository \
-      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages:$RABBITMQ_VERSION \
+      --url $INSTALL_REGISTRY_HOSTNAME/$INSTALL_REGISTRY_REPO/rmq-packages:1.4.0 \
       --namespace tanzu-rabbitmq-operator
     ````
 
@@ -82,7 +85,7 @@ INSTALL_REGISTRY_PASSWORD="..."
     ```bash
     tanzu package install rabbitmq-operator \
       --package rabbitmq.tanzu.vmware.com \
-      --version $RABBITMQ_VERSION \
+      --version 1.4.0 \
       --namespace tanzu-rabbitmq-operator \
       --values-file rabbitmq-operator.yaml
     ```
@@ -163,6 +166,3 @@ standbyreplications               sr                                     rabbitm
     service/rmq-1                  ClusterIP   10.3.241.57    <none>        15692/TCP,5672/TCP,15672/TCP   81s
     service/rmq-1-nodes            ClusterIP   None           <none>        4369/TCP,25672/TCP             81s
     ```
-
----
-Next: [Services Toolkit](./services-toolkit.md)
