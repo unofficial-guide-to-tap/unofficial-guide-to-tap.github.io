@@ -99,8 +99,8 @@ NAMESPACE="test"
 
   Store the CA cert to a file
   ```bash
-  CA_CRT="$(mktemp)"
-  kubectl -n $NAMESPACE get secrets $USERNAME-token -o jsonpath='{.data.ca\.crt}' | base64 -d > $CA_CRT
+  CA_CRT_FILE="$(mktemp)"
+  kubectl -n $NAMESPACE get secrets $USERNAME-token -o jsonpath='{.data.ca\.crt}' | base64 -d > $CA_CRT_FILE
   ```
 
   Create cluster, user and context in your kubeconf
