@@ -80,12 +80,12 @@ For the rest of this guide, we will assume you have your certificate in a file c
 
 ### Check TAP GUI Certificate
 ```bash
-DOMAIN="..."
+TAP_DOMAIN="..."
 ```
 ```bash
 openssl s_client -showcerts \
-  -servername tap-gui.$DOMAIN \
-  -connect tap-gui.$DOMAIN:443 < /dev/null
+  -servername tap-gui.$TAP_DOMAIN \
+  -connect tap-gui.$TAP_DOMAIN:443 < /dev/null
 ```
 
 ### Check Workload Certificate
@@ -112,10 +112,10 @@ If you alread created a test workload, make sure to delete it first. It needs to
 3. Check certificate
 
     ```bash
-    DOMAIN="..."
+    TAP_DOMAIN="..."
     ```
     ```bash
     openssl s_client -showcerts \
-      -servername petclinic-test.$DOMAIN \
-      -connect petclinic-test.$DOMAIN:443 < /dev/null
+      -servername petclinic-test.$TAP_DOMAIN \
+      -connect petclinic-test.$TAP_DOMAIN:443 < /dev/null
     ```

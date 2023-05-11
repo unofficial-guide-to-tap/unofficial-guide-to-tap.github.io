@@ -4,6 +4,20 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
 > The `values.yaml` supports a `shared.ingress_issuer` attribute which causes CNRS and other services to use a specified `ClusterIssuer` to create `Certificate`s. CNRS will generate a unique host name for each deployed app and therefore will use the `ClusterIssuer` each time an application gets deployed. Letsencrypt secures their API (production, not staging) with a rate limit whic - once the limit is reached - will lock the account out for about a week! For this reason, in this guide we create a single `Certificate` that will work for all endpoints including applications (wildcard certificate) manually and reference it in the `values.yaml`.
 
+## Setup Parameters
+
+In this section, we set up some environment variables that will be referenced down the line in the installation steps.
+
+```bash
+GCP_PROJECT_ID="YOUR_PROJECT_ID"
+LETSENCRYPT_EMAIL="YOUR_EMAIL_ADDRESS"
+LETSENCRYPT_ORG_NAME="TAP Demo"
+TAP_DOMAIN="tap.example.com"
+```
+
+You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `ssl-params.sh` and load it into your shell with `source ssl-params.sh`. The latter makes it easier to load them again after you have exited your shell.
+
+
 
 ## Create Cluster Issuers
 
@@ -11,8 +25,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 
    This will allow Cert Manager to interact with Google Cloud DNS to perform the DNS-01 challenge.
     ```bash
-    GOOGLE_APPLICATION_CREDENTIALS="$HOME/key.json"
-    KEY_JSON_BASE64=$(cat $GOOGLE_APPLICATION_CREDENTIALS | base64 -w0)
+    KEY_JSON_BASE64=$(cat $HOME/key.json | base64 -w0)
     ```
     ```bash
     cat <<EOF | kubectl apply -f -
@@ -44,7 +57,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     spec:
       acme:
         server: https://acme-staging-v02.api.letsencrypt.org/directory
-        email: $EMAIL_ADDRESS
+        email: $LETSENCRYPT_EMAIL
         privateKeySecretRef: 
           name: letsencrypt-staging-dns-account-key
         solvers:
@@ -53,10 +66,10 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
                 serviceAccountSecretRef:
                   name: clouddns-dns01-solver-svc-acct
                   key: key.json
-                project: $PROJECT_ID
+                project: $GCP_PROJECT_ID
             selector:
               dnsZones:
-              - $DOMAIN
+              - $TAP_DOMAIN
     EOF
     ```
     ```bash
@@ -68,7 +81,7 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
     spec:
       acme:
         server: https://acme-v02.api.letsencrypt.org/directory
-        email: $EMAIL_ADDRESS
+        email: $LETSENCRYPT_EMAIL
         privateKeySecretRef: 
           name: letsencrypt-dns-account-key
         solvers:
@@ -77,21 +90,16 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
                 serviceAccountSecretRef:
                   name: clouddns-dns01-solver-svc-acct
                   key: key.json
-                project: $PROJECT_ID
+                project: $GCP_PROJECT_ID
             selector:
               dnsZones:
-              - $DOMAIN
+              - $TAP_DOMAIN
     EOF
     ```
 
 ## Generate Certificates
 
 1. Create the `Certificate`
-
-    ```bash
-    DOMAIN="..."
-    ORGANIZATION_NAME="..."
-    ```
 
     ```bash
     cat <<EOF | kubectl apply -f -
@@ -101,15 +109,15 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
       name: tap-cert
       namespace: tanzu-system-ingress
     spec:
-      commonName: "*.$DOMAIN"
+      commonName: "*.$TAP_DOMAIN"
       dnsNames:
-      - "*.$DOMAIN"
+      - "*.$TAP_DOMAIN"
       issuerRef:
         kind: ClusterIssuer
         name: letsencrypt-staging-dns
       subject:
         organizations:
-        - $ORGANIZATION_NAME
+        - $LETSENCRYPT_ORG_NAME
       secretName: tap-cert
     EOF
     ```
@@ -131,15 +139,15 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
       name: tap-cert
       namespace: tanzu-system-ingress
     spec:
-      commonName: "*.$DOMAIN"
+      commonName: "*.$TAP_DOMAIN"
       dnsNames:
-      - "*.$DOMAIN"
+      - "*.$TAP_DOMAIN"
       issuerRef:
         kind: ClusterIssuer
         name: letsencrypt-dns
       subject:
         organizations:
-        - $ORGANIZATION_NAME
+        - $LETSENCRYPT_ORG_NAME
       secretName: tap-cert
     EOF
     ```
@@ -195,13 +203,11 @@ This guide will setup TLS termination at the Kubernetes Ingress and make sure th
 ## Validate
 
 ### Check TAP GUI Certificate
-```bash
-DOMAIN="..."
-```
+
 ```bash
 openssl s_client -showcerts \
-  -servername tap-gui.$DOMAIN \
-  -connect tap-gui.$DOMAIN:443 < /dev/null
+  -servername tap-gui.$TAP_DOMAIN \
+  -connect tap-gui.$TAP_DOMAIN:443 < /dev/null
 ```
 
 ### Check Workload Certificate
@@ -228,10 +234,7 @@ If you alread created a test workload, make sure to delete it first. It needs to
 3. Check certificate
 
     ```bash
-    DOMAIN="..."
-    ```
-    ```bash
     openssl s_client -showcerts \
-      -servername petclinic-test.$DOMAIN \
-      -connect petclinic-test.$DOMAIN:443 < /dev/null
+      -servername petclinic-test.$TAP_DOMAIN \
+      -connect petclinic-test.$TAP_DOMAIN:443 < /dev/null
     ```
