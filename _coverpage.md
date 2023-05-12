@@ -1,8 +1,7 @@
 ![logo](_media/tap.png)
 
-# Unofficial Guide To TAP
-
-> A task-based guide to VMware Tanzu Application Platform
+## Unofficial Guide To
+# TAP 1.5
 
 </br>
 </br>
