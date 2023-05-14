@@ -6,7 +6,7 @@ In Kubernetes, a service account is a special type of account that is used by ap
 * You haven't connected TAP's Kubernetes cluster to any identity provider and don't intend to do so, yet users need access to their `Namespace`
 * You want to test your platform and minimc the exact roles and permissions your users have.
 
-## Setup The Service Account
+## Create The Service Account
 
 ```
 USERNAME="dev-sa"
@@ -45,52 +45,98 @@ NAMESPACE="test"
     EOF
     ```
 
-4. Assign roles
+## Configure RBAC
 
-    In this example, we're going to assign (bind) all the pre-defined roles for users that TAP ships.
+With a regular `User` this step would be very easy with the `rbac` plugin for Tanzu CLI. You would simple run something like
 
-    ```bash
-    cat <<EOF | kubectl -n $NAMESPACE apply -f -
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: RoleBinding
-    metadata:
-      name: $USERNAME-app-editor
-    subjects:
-    - kind: ServiceAccount
-      name: $USERNAME
-    roleRef:
-      kind: ClusterRole
-      name: app-editor
-      apiGroup: rbac.authorization.k8s.io
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: RoleBinding
-    metadata:
-      name: $USERNAME-app-operator
-    subjects:
-    - kind: ServiceAccount
-      name: $USERNAME
-    roleRef:
-      kind: ClusterRole
-      name: app-operator
-      apiGroup: rbac.authorization.k8s.io
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: RoleBinding
-    metadata:
-      name: $USERNAME-app-viewer
-    subjects:
-    - kind: ServiceAccount
-      name: $USERNAME
-    roleRef:
-      kind: ClusterRole
-      name: app-viewer
-      apiGroup: rbac.authorization.k8s.io
-    EOF
-    ```
+```bash
+for I in editor operator viewer; do
+  tanzu rbac binding add --user dev1 --role app-$I --namespace test
+done
+```
 
-5. Set up a kubeconfig context
+and the CLI would do the following for you:
+
+- Create a `RoleBinding` called "app-editor" in the `Namespace` "test" and add the `User` "dev1" to it
+- Create a `RoleBinding` called "app-operator" in the `Namespace` "test" and add the `User` "dev1" to it
+- Create a `RoleBinding` called "app-viewer"in the `Namespace` "test" and add the `User` "dev1" to it
+- Add the `User` "dev1" to the `ClusterRoleBinding` "app-editor-cluster-access"
+- Add the `User` "dev1" to the `ClusterRoleBinding` "app-operator-cluster-access"
+- Add the `User` "dev1" to the `ClusterRoleBinding` "app-viewer-cluster-access"
+
+The output would look something like this:
+```
+Created RoleBinding 'app-editor' in namespace 'test'
+Added User 'dev-sa' to RoleBinding 'app-editor' in namespace 'test'
+Added User 'dev-sa' to ClusterRoleBinding 'app-editor-cluster-access'
+Created RoleBinding 'app-operator' in namespace 'test'
+Added User 'dev-sa' to RoleBinding 'app-operator' in namespace 'test'
+Added User 'dev-sa' to ClusterRoleBinding 'app-operator-cluster-access'
+Created RoleBinding 'app-viewer' in namespace 'test'
+Added User 'dev-sa' to RoleBinding 'app-viewer' in namespace 'test'
+Added User 'dev-sa' to ClusterRoleBinding 'app-viewer-cluster-access'
+```
+
+Since we're using a `ServiceAccount` and because Tanzu CLI's RBAC plugin does not support that, we need to perform the same steps manually. Save the following script as `sa-rbac.sh`:
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+NAMESPACE="$1"
+SA_NAME="$2"
+
+# Create RoleBindings in Namespace
+
+for I in editor operator viewer; do
+  cat <<EOF | kubectl apply -n $NAMESPACE -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: app-$I
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: app-$I
+EOF
+done
+
+# Create Patch for (Cluster)RoleBindings
+PATCH_FILE="$(mktemp)"
+cat <<EOF > $PATCH_FILE
+[{
+  "op": "add",
+  "path": "/subjects/-",
+  "value": {
+    "kind": "ServiceAccount",
+    "name": "$SA_NAME",
+    "namespace": "$NAMESPACE"
+  }
+}]
+EOF
+
+# Add ServiceAccount to RoleBindings
+for I in editor operator viewer; do
+  kubectl -n $NAMESPACE patch rolebinding app-$I --type json --patch-file $PATCH_FILE
+done
+
+# Add ServiceAccount to ClusterRoleBindings
+for I in editor operator viewer; do
+  kubectl -n $NAMESPACE patch clusterrolebinding app-$I-cluster-access --type json --patch-file $PATCH_FILE
+done
+```
+
+Then run: 
+```bash
+bash sa-rbac.sh test dev-sa
+```
+
+> Please not that the script does not check if the `ServiceAccount` is already in the list of `subjects` of the `(Cluster)RoleBinding`. Instead the `ServiceAccount` will be appended every time the script runs. While this is not a problem for RBAC it pollutes your `(Cluster)RoleBindings` over time.
+
+
+## Create A Kubeconfig Context
+
+1. Set up a kubeconfig context
 
   Extract the token
   ```bash
