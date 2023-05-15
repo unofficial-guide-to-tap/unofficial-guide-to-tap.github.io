@@ -303,3 +303,81 @@ If you haven't already done so, proceed to [Tanzu SQL](tap-for-platform-engineer
     ```
 
 ## Validate
+
+As a developer:
+
+1. Create a `ClassClaim` for the `ClusterInstanceClass`
+
+  ```bash
+  tanzu service class-claim create tanzu-psql-1 --class tanzu-psql -p storageGB=5 -n test
+  ```
+
+2. Validate the `ClassClaim` has ben created successfully
+
+  ```
+  tanzu services class-claims get tanzu-psql-1 --namespace test
+  ```
+
+As a platform engineer:
+
+1. Check if the instance of `XPostgreSQLInstance` has been created
+
+  ```
+  kubectl get xpostgresqlinstances.database.tanzu.example.org -A
+  ```
+  Expected output:
+  ```
+  NAME                 SYNCED   READY   COMPOSITION                                       AGE
+  tanzu-psql-1-jj2vg   True     False   xpostgresqlinstances.database.tanzu.example.org   101s
+  ```
+
+2. Has the `Postgres` instance been created in the `tanzu-psql-service-instances` `Namespace`?
+
+  ```bash
+  kubectl -n tanzu-psql-service-instances get postgres
+  ```
+  Expected output:
+  ```
+  NAME                 STATUS    DB VERSION   BACKUP LOCATION   AGE
+  tanzu-psql-1-jj2vg   Running   15.2                           2m56s
+  ```
+
+As a developer:
+
+1. Wait for `tanzu services class-claims get tanzu-psql-1 --namespace test` to show `Ready: True`
+
+2. Check the `Secret` mentioned in the output of step 1 under `Status.Claimed Resource.Name` for example with `kubectl view-secret` or `kubectl get secret -o yaml`:
+
+  ```
+  kubectl view-secret -n test 450836cc-a4bf-4988-aa6c-5bb2e128e079 -a
+  ```
+  Expected output:
+  ```
+  database=tanzu-psql-1-jj2vg
+  host=tanzu-psql-1-jj2vg.tanzu-psql-service-instances
+  password=**********
+  port=5432
+  provider=vmware
+  type=postgresql
+  uri=postgresql://pgappuser:**********@tanzu-psql-1-jj2vg.tanzu-psql-service-instances:5432/tanzu-psql-1-jj2vg
+  username=pgappuser
+  ```
+
+  Or
+
+  ```
+  kubectl -n test get secret 450836cc-a4bf-4988-aa6c-5bb2e128e079 -o yaml | yq .data
+  ```
+  Expected output: (values are base64 encoded)
+  ```
+  database: dGFuenUtcHNxbC0xLWpqMnZn
+  host: dGFuenUtcHNxbC0xLWpqMnZnLnRhbnp1LXBzcWwtc2VydmljZS1pbnN0YW5jZXM=
+  password: KioqKioqKioqKgo=
+  port: NTQzMg==
+  provider: dm13YXJl
+  type: cG9zdGdyZXNxbA==
+  uri: cG9zdGdyZXNxbDovL3BnYXBwdXNlcjoqKioqKioqKioqQHRhbnp1LXBzcWwtMS1qajJ2Zy50YW56dS1wc3FsLXNlcnZpY2UtaW5zdGFuY2VzOjU0MzIvdGFuenUtcHNxbC0xLWpqMnZnCg==
+  username: cGdhcHB1c2Vy
+  ```
+
+<!-- https://vrelevant.net/crossplane-troubleshooting/ -->
