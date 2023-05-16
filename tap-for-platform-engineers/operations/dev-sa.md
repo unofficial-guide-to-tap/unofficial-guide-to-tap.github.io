@@ -51,7 +51,7 @@ With a regular `User` this step would be very easy with the `rbac` plugin for Ta
 
 ```bash
 for I in editor operator viewer; do
-  tanzu rbac binding add --user dev1 --role app-$I --namespace test
+  tanzu rbac binding add --user $USERNAME --role app-$I --namespace $NAMESPACE
 done
 ```
 
@@ -106,6 +106,10 @@ PATCH_FILE="$(mktemp)"
 cat <<EOF > $PATCH_FILE
 [{
   "op": "add",
+  "path": "/subjects",
+  "value": []
+},{
+  "op": "add",
   "path": "/subjects/-",
   "value": {
     "kind": "ServiceAccount",
@@ -122,6 +126,16 @@ done
 
 # Add ServiceAccount to ClusterRoleBindings
 for I in editor operator viewer; do
+  cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: app-$I-cluster-access
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: app-$I-cluster-access
+EOF
   kubectl -n $NAMESPACE patch clusterrolebinding app-$I-cluster-access --type json --patch-file $PATCH_FILE
 done
 ```
