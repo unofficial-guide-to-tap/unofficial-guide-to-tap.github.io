@@ -6,11 +6,11 @@
 
 Create the following Azure resources manually or use this [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/azr) project to automate the setup.
 
-1. Create a **Virtual Network** and subnet
-2. Create a **Azure Kubernetes Service** (AKS) cluster in the network (check official docs for cluster requirements)
+1. Create a **Virtual Network** and **Subnet**
+2. Create a **Azure Kubernetes Service** (AKS) cluster in the network
 3. Create a **DNS Zone** (or external DNS service)
-4. Have access to a **Azure Container Registry** (ACR)
-5. An Ubuntu based **Google Compute Engine Instance** in the VPC that will be used as a jump host
+4. Create a **Azure Container Registry** (ACR) with a token and token password that has access to the repositories `tap-packages`, `cluster-essentials-bundle`, `buildservice` and `workloads`
+5. An Ubuntu based **Virtual Machine** in the subnet that will be used as a jump host
 
 <!--
 END: ## Prepare The Infrastructure
