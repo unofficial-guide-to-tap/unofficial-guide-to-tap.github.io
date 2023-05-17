@@ -15,7 +15,7 @@ If you haven't already done so, proceed to [Tanzu SQL](tap-for-platform-engineer
 
   ```
   kubectl create secret docker-registry regsecret \
-    --namespace tanzu-rabbitmq-operator \
+    --namespace tanzu-psql-service-instances \
     --docker-server=$INSTALL_REGISTRY_HOSTNAME \
     --docker-username="$INSTALL_REGISTRY_USERNAME"  \
     --docker-password="$INSTALL_REGISTRY_PASSWORD"
@@ -55,10 +55,10 @@ If you haven't already done so, proceed to [Tanzu SQL](tap-for-platform-engineer
           openAPIV3Schema:
             properties:
               spec:
-              properties:
-                storageGB:
-                  type: integer
-                  default: 20
+                properties:
+                  storageGB:
+                    type: integer
+                    default: 20
               type: object
             type: object
         served: true
