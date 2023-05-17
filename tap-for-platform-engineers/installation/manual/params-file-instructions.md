@@ -1,0 +1,1 @@
+You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `params.sh` and load it into your shell with `source params.sh`. The latter makes it easier to load them again after you have exited your shell.

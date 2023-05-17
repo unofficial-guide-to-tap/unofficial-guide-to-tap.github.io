@@ -1,0 +1,1 @@
+If your receive a "permission denied" error running `docker` in this step, your Linux user account probably just isn't in the `docker` group. Run the following command, then logout and and log back in again: `sudo addgroup tapadmin docker`

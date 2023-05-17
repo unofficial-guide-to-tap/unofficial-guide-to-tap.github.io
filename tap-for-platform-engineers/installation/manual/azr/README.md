@@ -20,11 +20,7 @@ END: ## Prepare The Infrastructure
 
 Before you proceed, install the following components:
 
-| Software | Version | Check |
-|---|---|---|
-| Docker | >= 20.10 | `docker version` |
-| Kubectl | >= 1.25  | `kubectl version --client` |
-| Azure CLI | latest  | `az version` |
+[jumphost-software-table](../jumphost-software-table.md ':include')
 
 #### Setup Parameters
 
@@ -43,7 +39,7 @@ TANZUNET_PASSWORD="************"
 TAP_DOMAIN="tap.example.com"
 ```
 
-You may e.g. copy the code above, edit and execute it in your shell using `EDITOR=vim fc`. Alternatively, save the copy above to a file like `params.sh` and load it into your shell with `source params.sh`. The latter makes it easier to load them again after you have exited your shell.
+[params-file-instructions](../params-file-instructions.md ':include')
 
 #### Login To Azure
 
@@ -61,11 +57,7 @@ az aks get-credentials --resource-group $AZR_RESOURCE_GROUP --name tap-demo-clus
 #### Download Software
 Download the following artifacts from [Tanzu Network](https://network.tanzu.vmware.com/) to your jump host.
 
-| Product | Release | Artifact | Notes |
-|---|---|---|---|
-| Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-linux-amd64-1.5.0.tgz | Contains [Carvel](https://carvel.dev/) tools |
-| Cluster Essentials for VMware Tanzu | 1.5.0 | tanzu-cluster-essentials-bundle-1.5.0.yml | Contains the SHA hash |
-| VMware Tanzu Application Platform | 1.5.0 | tanzu-cli-tap-1.5.0/tanzu-framework-bundle-linux | This is the name of the Tanzu CLI which is the primary interface for platform engineers and application teams to interact with TAP. The software bundle is part of the "Tanzu Application Platform" product in Tanzu Network |
+[tanzunet-software-table](../tanzunet-software-table.md ':include')
 
 ## Installation
 
@@ -79,29 +71,8 @@ Start running the following commands from your home directory:
 cd $HOME
 ```
 
-1. Extract the downloaded archive
-    ```bash
-    mkdir tanzu-framework
-    tar xvf tanzu-framework-linux-amd64-v0.28.1.1.tar -C tanzu-framework
-    cd tanzu-framework
-    ```
+[tanzucli-install-steps](../tanzucli-install-steps.md ':include')
 
-2. Install the executable
-    ```bash
-    sudo install cli/core/v0.28.1/tanzu-core-linux_amd64 /usr/local/bin/tanzu
-    ```
-
-3. Install the shipped plugins
-    ```bash
-    export TANZU_CLI_NO_INIT=true
-    tanzu plugin install --local cli all
-    ```
-
-4. Validate the installation
-    ```bash
-    tanzu version
-    tanzu plugin list
-    ```
 
 ### Install Carvel Tools
 The binaries we need to have installed are shipping with the previously downloaded Cluster Essentials package.
@@ -112,31 +83,12 @@ Start running the following commands from your home directory:
 cd $HOME
 ```
 
-1. Extract the downloaded archive
+[carvel-install-steps](../carvel-install-steps.md ':include')
 
-    ```bash
-    mkdir cluster-essentials
-    tar xvf tanzu-cluster-essentials-linux-amd64-1.5.0.tgz -C cluster-essentials
-    cd cluster-essentials
-    ```
-
-2. Install the executables
-    ```bash
-    sudo install ./imgpkg /usr/local/bin/imgpkg
-    sudo install ./kapp /usr/local/bin/kapp
-    sudo install ./kbld /usr/local/bin/kbld
-    sudo install ./ytt /usr/local/bin/ytt
-    ```
-
-3. Validate the installation
-    ```bash
-    imgpkg --version
-    kapp --version
-    kbld --version
-    ytt --version
-    ```
 
 ### Create A Package Repository Mirror
+
+[docker-group-instructions](../docker-group-instructions.md ':include')
 
 1. Docker login to Tanzu Network
     ```bash
@@ -144,12 +96,6 @@ cd $HOME
     docker login registry.tanzu.vmware.com \
       -u $TANZUNET_USERNAME \
       --password-stdin
-    ```
-
-    If your receive a "permission denied" error in this step, your Linux user account probably just isn't in the `docker` group. Run the following command, then logout and and log back in again:
-
-    ```bash
-    sudo addgroup tapadmin docker
     ```
 
 2. Docker login to Azure Container Registry (ACR)
@@ -207,26 +153,7 @@ Start running the following commands from your home directory:
 cd $HOME
 ```
 
-1. Get the SHA hash if not already there
-
-   ```bash
-   CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
-   ```
-
-2. Setup environment variables
-
-    ```bash
-    export INSTALL_REGISTRY_HOSTNAME="${AZR_REGISTRY_HOST}"
-    export INSTALL_BUNDLE="${AZR_REGISTRY_HOST}/cluster-essentials-bundle@sha256:$CLUSTER_ESSENTIALS_SHA"
-    export INSTALL_REGISTRY_USERNAME="${AZR_REGISTRY_USERNAME}"
-    export INSTALL_REGISTRY_PASSWORD="${AZR_REGISTRY_PASSWORD}"
-    ```
-
-3. Run the installation script
-    ```bash
-    cd cluster-essentials
-    ./install.sh --yes
-    ```
+[cluster-essentials-install-steps](../cluster-essentials-install-steps.md ':include')
 
 <!--
 END: ## Install Cluster Essentials
@@ -264,10 +191,6 @@ cd $HOME
     ```
 
 4. Create the TAP configuration file
-
-    ```
-    GOOGLE_ACCOUNT_KEY="$(cat $HOME/key.json | jq -c | jq -R | sed 's/^"//' | sed 's/"$//')"
-    ```
 
     ```bash
     cat <<EOF > values.yaml
@@ -320,17 +243,7 @@ END: ## Install TAP
 
 ### Create DNS Records
 
-1. Get the public IP of your Contour ingress (installed with TAP)
-    ```
-    kubectl -n tanzu-system-ingress get svc envoy -o json \
-      | jq ".status.loadBalancer.ingress[] | .ip" -r
-    ```
-
-2. Create the following A records pointing to that address
-   - `*.$TAP_DOMAIN` 
-   - `*.cnrs.$TAP_DOMAIN`
-
-The [Terraform](https://github.com/unofficial-guide-to-tap/terraform/tree/main/gcp) project mentioned above allows you to configure the IP address as a variable so you can manage these entries via Terraform.
+[create-dns-records-steps](../create-dns-records-steps.md ':include')
 
 <!--
 END: ## Create DNS Records
@@ -338,70 +251,4 @@ END: ## Create DNS Records
 
 ## Validation <!-- omit from toc -->
 
-### Access TAP GUI
-
-1. Open your browser (ideally, use Google Chrome as it allows you to accept the self-signed certificate)
-2. Navigate to [https://tap-gui.$TAP_DOMAIN](http://tap-gui.$TAP_DOMAIN)
-3. In the "Guest" panel, click "ENTER" to proceed as a guest user
-
-### Deploy A Test Workload
-
-1. Create a developer namespace
-    ```bash
-    kubectl create ns --dry-run=client -o yaml test | kubectl apply -f -
-    kubectl label namespaces test apps.tanzu.vmware.com/tap-ns=""
-    ```
-
-2. Deploy the workload
-    ```bash
-    tanzu apps workload create petclinic -n test \
-      -l "app.kubernetes.io/part-of=petclinic" \
-      -l "apps.tanzu.vmware.com/workload-type=web" \
-      --build-env "BP_JVM_VERSION=17" \
-      --git-repo https://github.com/spring-projects/spring-petclinic.git \
-      --git-branch main
-    ```
-
-3. Monitor progress
-
-    Run the following command and check the readiness and health state of supply chain resources:
-    ```bash
-    tanzu apps workload get petclinic -n test
-    ```
-
-    Tail the logs of the supply chain execution:
-    ```bash
-    tanzu apps workload tail petclinic --namespace test
-    ```
-
-    Watch the progress in the UI:
-    1. Open your browser at [https://tap-gui.DOMAIN](http://tap-gui.DOMAIN)
-    2. In the menu, navigate to "Supply Chains"
-    3. Click on `petclinic`
-
-    &nbsp;
-    
-4. Access the application
-
-    1. Run the following command to retrieve the application URL. The URL is displayed in the "Knative Services" section.
-        ```bash
-        tanzu apps workload get petclinic --namespace test
-        ```
-
-    2. Open the URL in your browser. You should see the Petclinic web UI.
-
-### Cleanup
-
-1. Delete the `Workload`
-
-    ```bash
-    tanzu -n test app workload delete petclinic
-    ```
-
-2. Wait a few seconds until the resources got cleaned up
-
-3. Delete the `Namespace`
-
-    ```bash
-    kubectl delete ns test
-    ```
+[validation](../validation.md ':include')
