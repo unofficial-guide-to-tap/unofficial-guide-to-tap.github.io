@@ -42,12 +42,7 @@ You may e.g. copy the code above, edit and execute it in your shell using `EDITO
 2. Create the `ClusterIssuer`
 
    The `ClusterIssuer` tells Cert Manager which `Certificate` requests to handle and how to handle them. We create one for the Letsencrypt Staging API and one for the Production API. This way we can play with it until it works before getting locked out.
-
-    ```bash
-    PROJECT_ID="..."
-    EMAIL_ADDRESS="..."
-    DOMAIN="..."
-    ```
+   
     ```bash
     cat <<EOF | kubectl apply -f -
     apiVersion: cert-manager.io/v1
