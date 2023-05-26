@@ -153,7 +153,26 @@ Start running the following commands from your home directory:
 cd $HOME
 ```
 
-[cluster-essentials-install-steps](../cluster-essentials-install-steps.md ':include')
+1. Get the SHA hash if not already there
+
+   ```bash
+   CLUSTER_ESSENTIALS_SHA=$(cat tanzu-cluster-essentials-bundle-1.5.0.yml | yq '.bundle.image' | cut -d ":" -f 2)
+   ```
+
+2. Setup environment variables
+
+    ```bash
+    export INSTALL_REGISTRY_HOSTNAME="gcr.io"
+    export INSTALL_BUNDLE="gcr.io/${GCP_PROJECT_ID}/cluster-essentials-bundle@sha256:$CLUSTER_ESSENTIALS_SHA"
+    export INSTALL_REGISTRY_USERNAME="_json_key"
+    export INSTALL_REGISTRY_PASSWORD="$(cat $HOME/key.json)"
+    ```
+
+3. Run the installation script
+    ```bash
+    cd cluster-essentials
+    ./install.sh --yes
+    ```
 
 <!--
 END: ## Install Cluster Essentials
